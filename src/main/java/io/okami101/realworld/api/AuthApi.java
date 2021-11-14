@@ -5,9 +5,8 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.okami101.realworld.api.exception.InvalidAuthenticationException;
@@ -24,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Tag(name = "User and Authentication")
-public class AuthApi extends BaseApi {
+public class AuthApi extends ApiController {
     private UserRepository userRepository;
     private PasswordHashService passwordHashService;
     private JwtService jwtService;
@@ -37,7 +36,7 @@ public class AuthApi extends BaseApi {
     }
 
     @Operation(summary = "Register a new user", description = "Register a new user")
-    @RequestMapping(path = "/users", method = RequestMethod.POST)
+    @PostMapping(path = "/users")
     public UserResponse register(@Valid @RequestBody NewUserRequest request) {
         User user = new User();
         user.setEmail(request.getUser().getEmail());
@@ -50,7 +49,7 @@ public class AuthApi extends BaseApi {
     }
 
     @Operation(summary = "Existing user login", description = "Login for existing user")
-    @RequestMapping(path = "/users/login", method = RequestMethod.POST)
+    @PostMapping(path = "/users/login")
     public UserResponse register(@Valid @RequestBody LoginUserRequest request) {
         Optional<User> optional = userRepository.findByEmail(request.getUser().getEmail());
         if (!optional.isPresent()

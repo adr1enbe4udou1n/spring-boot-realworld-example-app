@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 
-@SuppressWarnings("SpringJavaAutowiringInspection")
 public class JwtTokenFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
@@ -49,13 +48,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private Optional<String> getTokenString(String header) {
         if (header == null) {
             return Optional.empty();
-        } else {
-            String[] split = header.split(" ");
-            if (split.length < 2) {
-                return Optional.empty();
-            } else {
-                return Optional.ofNullable(split[1]);
-            }
         }
+
+        String[] split = header.split(" ");
+        if (split.length < 2) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(split[1]);
     }
 }

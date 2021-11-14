@@ -6,8 +6,8 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class LoginUserRequest {
+public class UpdateUserRequest {
     @Valid
     @NotNull
-    private LoginUser user;
+    private UpdateUser user;
 }
