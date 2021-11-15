@@ -1,4 +1,4 @@
-package io.okami101.realworld.api.user;
+package io.okami101.realworld.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,7 @@ import io.okami101.realworld.core.user.UserRepository;
 public class BaseTest {
 
     @Value("http://localhost:${local.server.port}")
-    String baseUrl;
+    protected String baseUrl;
 
     @Autowired
     protected UserRepository userRepository;

@@ -8,10 +8,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import io.okami101.realworld.api.BaseTest;
 import io.okami101.realworld.application.user.NewUser;
 import io.okami101.realworld.application.user.NewUserRequest;
 import io.okami101.realworld.core.service.JwtService;
-import io.okami101.realworld.core.user.PasswordHashService;
 import io.okami101.realworld.core.user.User;
 
 import static io.restassured.RestAssured.given;
@@ -23,9 +23,6 @@ public class RegisterUserTest extends BaseTest {
 
     @Autowired
     private JwtService jwtService;
-
-    @Autowired
-    private PasswordHashService passwordHashService;
 
     @ParameterizedTest
     @MethodSource("stringProvider")
