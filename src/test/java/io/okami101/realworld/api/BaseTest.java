@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import io.okami101.realworld.core.user.PasswordHashService;
 import io.okami101.realworld.core.user.User;
 import io.okami101.realworld.core.user.UserRepository;
 
@@ -21,6 +22,9 @@ public class BaseTest {
     protected UserRepository userRepository;
 
     @Autowired
+    protected PasswordHashService passwordHashService;
+
+    @Autowired
     protected Flyway flyway;
 
     @BeforeEach
@@ -33,6 +37,16 @@ public class BaseTest {
         User user = new User();
         user.setName("John Doe");
         user.setEmail("john.doe@example.com");
+        userRepository.save(user);
+
+        return user;
+    }
+
+    protected User createJohnUserWithPassword() {
+        User user = new User();
+        user.setName("John Doe");
+        user.setEmail("john.doe@example.com");
+        user.setPassword(passwordHashService.hash("password"));
         userRepository.save(user);
 
         return user;

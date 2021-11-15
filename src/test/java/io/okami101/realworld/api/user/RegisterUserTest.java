@@ -25,13 +25,13 @@ public class RegisterUserTest extends BaseTest {
     private JwtService jwtService;
 
     @ParameterizedTest
-    @MethodSource("stringProvider")
+    @MethodSource("dataProvider")
     public void cannot_register_with_invalid_data(NewUser data) {
         given().contentType("application/json").body(new NewUserRequest(data)).when().post(baseUrl + "/api/users")
                 .then().statusCode(400);
     }
 
-    static Stream<NewUser> stringProvider() {
+    static Stream<NewUser> dataProvider() {
         return Stream.of(new NewUser("john.doe", "John Doe", "password"), new NewUser("john.doe@example.com", "", ""),
                 new NewUser("john.doe@example.com", "John Doe", "pass"));
     }
