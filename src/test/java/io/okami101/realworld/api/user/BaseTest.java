@@ -1,13 +1,21 @@
 package io.okami101.realworld.api.user;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import io.okami101.realworld.core.user.User;
 import io.okami101.realworld.core.user.UserRepository;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class BaseTest {
 
-    @MockBean
+    @Value("http://localhost:${local.server.port}")
+    String baseUrl;
+
+    @Autowired
     protected UserRepository userRepository;
 
     protected User createJohnUser() {
