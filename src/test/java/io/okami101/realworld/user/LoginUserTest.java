@@ -1,11 +1,11 @@
-package io.okami101.realworld.api.user;
+package io.okami101.realworld.user;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import io.okami101.realworld.api.BaseTest;
+import io.okami101.realworld.RealworldApplicationTests;
 import io.okami101.realworld.application.user.LoginUser;
 import io.okami101.realworld.application.user.LoginUserRequest;
 import io.okami101.realworld.core.service.JwtService;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.stream.Stream;
 
-public class LoginUserTest extends BaseTest {
+public class LoginUserTest extends RealworldApplicationTests {
 
     @Autowired
     private JwtService jwtService;

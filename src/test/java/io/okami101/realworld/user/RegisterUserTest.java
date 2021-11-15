@@ -1,4 +1,4 @@
-package io.okami101.realworld.api.user;
+package io.okami101.realworld.user;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -8,7 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import io.okami101.realworld.api.BaseTest;
+import io.okami101.realworld.RealworldApplicationTests;
 import io.okami101.realworld.application.user.NewUser;
 import io.okami101.realworld.application.user.NewUserRequest;
 import io.okami101.realworld.core.service.JwtService;
@@ -19,7 +19,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class RegisterUserTest extends BaseTest {
+public class RegisterUserTest extends RealworldApplicationTests {
 
     @Autowired
     private JwtService jwtService;
