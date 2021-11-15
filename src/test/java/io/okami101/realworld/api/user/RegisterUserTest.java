@@ -18,18 +18,16 @@ import io.okami101.realworld.application.user.NewUser;
 import io.okami101.realworld.application.user.NewUserRequest;
 import io.okami101.realworld.core.service.JwtService;
 import io.okami101.realworld.core.user.PasswordHashService;
+import io.okami101.realworld.core.user.User;
 import io.okami101.realworld.core.user.UserRepository;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 
 @WebMvcTest(AuthApi.class)
-public class RegisterUserTest {
+public class RegisterUserTest extends BaseTest {
     @Autowired
     private MockMvc mvc;
-
-    @MockBean
-    private UserRepository userRepository;
 
     @MockBean
     private JwtService jwtService;
@@ -56,6 +54,10 @@ public class RegisterUserTest {
 
     @Test
     public void cannot_register_twice() {
+        // createJohnUser();
 
+        given().contentType("application/json")
+                .body(new NewUserRequest(new NewUser("john.doe@example.com", "John Doe", "password"))).when()
+                .post("/users").then().statusCode(200);
     }
 }

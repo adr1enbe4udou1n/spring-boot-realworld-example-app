@@ -2,6 +2,7 @@ package io.okami101.realworld.application.user;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import javax.validation.constraints.Min;
 
 import lombok.AllArgsConstructor;
@@ -21,6 +22,6 @@ public class NewUser {
     private String username;
 
     @NotBlank
-    @Min(8)
+    @Size(min = 8)
     private String password;
 }
