@@ -1,5 +1,7 @@
 package io.okami101.realworld.api;
 
+import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +19,15 @@ public class BaseTest {
 
     @Autowired
     protected UserRepository userRepository;
+
+    @Autowired
+    protected Flyway flyway;
+
+    @BeforeEach
+    public void cleanUp() {
+        flyway.clean();
+        flyway.migrate();
+    }
 
     protected User createJohnUser() {
         User user = new User();
