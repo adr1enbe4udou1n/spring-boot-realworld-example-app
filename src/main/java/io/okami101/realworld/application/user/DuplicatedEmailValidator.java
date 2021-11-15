@@ -15,8 +15,15 @@ public class DuplicatedEmailValidator implements ConstraintValidator<DuplicatedE
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByEmail(value).map(u -> {
+            User user = null;
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return userRepository.findByEmail(value).map(u -> u.getId() == user.getId()).orElse(true);
+            if (principal instanceof User) {
+                user = (User) principal;
+            }
+
+            return user != null && u.getId() == user.getId();
+        }).orElse(true);
     }
 }

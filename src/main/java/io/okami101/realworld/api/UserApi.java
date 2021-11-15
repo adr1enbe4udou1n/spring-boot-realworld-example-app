@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.okami101.realworld.application.user.UpdateUserRequest;
@@ -22,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Tag(name = "User and Authentication")
+@RequestMapping(path = "/user")
 public class UserApi extends ApiController {
     private UserRepository userRepository;
     private JwtService jwtService;
@@ -33,13 +35,13 @@ public class UserApi extends ApiController {
     }
 
     @Operation(summary = "Get current user", description = "Gets the currently logged-in user")
-    @GetMapping(path = "/user")
+    @GetMapping
     public UserResponse current(@AuthenticationPrincipal User currentUser) {
         return new UserResponse(new UserDTO(currentUser, jwtService.encode(currentUser)));
     }
 
     @Operation(summary = "Update current user", description = "Updated user information for current user")
-    @PutMapping(path = "/user")
+    @PutMapping
     public UserResponse update(@AuthenticationPrincipal User currentUser,
             @Valid @RequestBody UpdateUserRequest request) {
         Optional.ofNullable(request.getUser().getEmail()).ifPresent(currentUser::setEmail);
