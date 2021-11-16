@@ -40,12 +40,8 @@ public class AuthApi extends ApiController {
     @Operation(summary = "Existing user login", description = "Login for existing user")
     @PostMapping(path = "/login")
     public UserResponse register(@Valid @RequestBody LoginUserRequest request) {
-        User user = service.checkCredentials(request.getUser().getEmail(), request.getUser().getPassword());
-        if (user == null) {
-
-            throw new InvalidAuthenticationException();
-        }
-
-        return new UserResponse(new UserDTO(user, jwtService.encode(user)));
+        return service.checkCredentials(request.getUser().getEmail(), request.getUser().getPassword())
+                .map(user -> new UserResponse(new UserDTO(user, jwtService.encode(user))))
+                .orElseThrow(InvalidAuthenticationException::new);
     }
 }

@@ -1,12 +1,17 @@
 package io.okami101.realworld.core.user;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -49,4 +54,9 @@ public class User {
     @UpdateTimestamp
     @Column(nullable = false)
     private Instant updatedAt;
+
+    @ManyToMany
+    @JoinTable(name = "follower_user", joinColumns = { @JoinColumn(name = "following_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "follower_id") })
+    private Set<User> followers = new HashSet<>();
 }

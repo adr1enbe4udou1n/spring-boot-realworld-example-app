@@ -45,6 +45,8 @@ public class RealworldApplicationTests {
         User user = new User();
         user.setName("John Doe");
         user.setEmail("john.doe@example.com");
+        user.setBio("John Bio");
+        user.setImage("https://randomuser.me/api/portraits/men/1.jpg");
         userRepository.save(user);
 
         return user;
@@ -54,6 +56,8 @@ public class RealworldApplicationTests {
         User user = new User();
         user.setName("Jane Doe");
         user.setEmail("jane.doe@example.com");
+        user.setBio("Jane Bio");
+        user.setImage("https://randomuser.me/api/portraits/women/1.jpg");
         userRepository.save(user);
 
         return user;

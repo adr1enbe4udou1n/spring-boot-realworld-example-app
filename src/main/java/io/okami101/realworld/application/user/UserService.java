@@ -35,10 +35,13 @@ public class UserService {
         return userRepository.save(currentUser);
     }
 
-    public User checkCredentials(String email, String password) {
+    public Optional<User> checkCredentials(String email, String password) {
         Optional<User> optional = userRepository.findByEmail(email);
-        return optional.isPresent() && passwordHashService.check(password, optional.get().getPassword())
-                ? optional.get()
-                : null;
+        return optional.isPresent() && passwordHashService.check(password, optional.get().getPassword()) ? optional
+                : Optional.empty();
+    }
+
+    public Optional<User> findByName(String username) {
+        return userRepository.findByName(username);
     }
 }
