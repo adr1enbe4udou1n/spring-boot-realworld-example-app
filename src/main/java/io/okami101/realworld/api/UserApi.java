@@ -1,7 +1,5 @@
 package io.okami101.realworld.api;
 
-import java.util.Optional;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.okami101.realworld.application.user.UpdateUserRequest;
 import io.okami101.realworld.application.user.UserDTO;
 import io.okami101.realworld.application.user.UserResponse;
+import io.okami101.realworld.application.user.UserService;
 import io.okami101.realworld.core.service.JwtService;
 import io.okami101.realworld.core.user.User;
-import io.okami101.realworld.core.user.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -25,14 +23,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "User and Authentication")
 @RequestMapping(path = "/user")
 public class UserApi extends ApiController {
-    private UserRepository userRepository;
-    private JwtService jwtService;
+    @Autowired
+    private UserService service;
 
     @Autowired
-    public UserApi(UserRepository userRepository, JwtService jwtService) {
-        this.userRepository = userRepository;
-        this.jwtService = jwtService;
-    }
+    private JwtService jwtService;
 
     @Operation(summary = "Get current user", description = "Gets the currently logged-in user")
     @GetMapping
@@ -44,12 +39,7 @@ public class UserApi extends ApiController {
     @PutMapping
     public UserResponse update(@AuthenticationPrincipal User currentUser,
             @Valid @RequestBody UpdateUserRequest request) {
-        Optional.ofNullable(request.getUser().getEmail()).ifPresent(currentUser::setEmail);
-        Optional.ofNullable(request.getUser().getUsername()).ifPresent(currentUser::setName);
-        Optional.ofNullable(request.getUser().getBio()).ifPresent(currentUser::setBio);
-        Optional.ofNullable(request.getUser().getImage()).ifPresent(currentUser::setImage);
-
-        userRepository.save(currentUser);
+        service.update(currentUser, request.getUser());
 
         return new UserResponse(new UserDTO(currentUser, jwtService.encode(currentUser)));
     }

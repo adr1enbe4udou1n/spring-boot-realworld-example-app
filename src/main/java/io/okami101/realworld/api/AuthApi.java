@@ -1,7 +1,5 @@
 package io.okami101.realworld.api;
 
-import java.util.Optional;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +13,9 @@ import io.okami101.realworld.application.user.LoginUserRequest;
 import io.okami101.realworld.application.user.NewUserRequest;
 import io.okami101.realworld.application.user.UserDTO;
 import io.okami101.realworld.application.user.UserResponse;
+import io.okami101.realworld.application.user.UserService;
 import io.okami101.realworld.core.service.JwtService;
-import io.okami101.realworld.core.user.PasswordHashService;
 import io.okami101.realworld.core.user.User;
-import io.okami101.realworld.core.user.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -26,26 +23,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "User and Authentication")
 @RequestMapping(path = "/users")
 public class AuthApi extends ApiController {
-    private UserRepository userRepository;
-    private PasswordHashService passwordHashService;
-    private JwtService jwtService;
+    @Autowired
+    private UserService service;
 
     @Autowired
-    public AuthApi(UserRepository userRepository, PasswordHashService passwordHashService, JwtService jwtService) {
-        this.userRepository = userRepository;
-        this.passwordHashService = passwordHashService;
-        this.jwtService = jwtService;
-    }
+    private JwtService jwtService;
 
     @Operation(summary = "Register a new user", description = "Register a new user")
     @PostMapping
     public UserResponse register(@Valid @RequestBody NewUserRequest request) {
-        User user = new User();
-        user.setEmail(request.getUser().getEmail());
-        user.setName(request.getUser().getUsername());
-        user.setPassword(passwordHashService.hash(request.getUser().getPassword()));
-
-        userRepository.save(user);
+        User user = service.create(request.getUser());
 
         return new UserResponse(new UserDTO(user, jwtService.encode(user)));
     }
@@ -53,13 +40,12 @@ public class AuthApi extends ApiController {
     @Operation(summary = "Existing user login", description = "Login for existing user")
     @PostMapping(path = "/login")
     public UserResponse register(@Valid @RequestBody LoginUserRequest request) {
-        Optional<User> optional = userRepository.findByEmail(request.getUser().getEmail());
-        if (!optional.isPresent()
-                || !passwordHashService.check(request.getUser().getPassword(), optional.get().getPassword())) {
+        User user = service.checkCredentials(request.getUser().getEmail(), request.getUser().getPassword());
+        if (user == null) {
 
             throw new InvalidAuthenticationException();
         }
 
-        return new UserResponse(new UserDTO(optional.get(), jwtService.encode(optional.get())));
+        return new UserResponse(new UserDTO(user, jwtService.encode(user)));
     }
 }
