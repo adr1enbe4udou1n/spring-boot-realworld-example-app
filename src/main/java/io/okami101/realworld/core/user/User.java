@@ -13,12 +13,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import io.okami101.realworld.core.article.Article;
+import io.okami101.realworld.core.article.Comment;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,4 +63,15 @@ public class User {
     @JoinTable(name = "follower_user", joinColumns = { @JoinColumn(name = "following_id") }, inverseJoinColumns = {
             @JoinColumn(name = "follower_id") })
     private Set<User> followers = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "article_favorite", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "article_id") })
+    private Set<Article> favoriteArticles = new HashSet<>();
+
+    @OneToMany(mappedBy = "author")
+    private Set<Article> articles = new HashSet<>();
+
+    @OneToMany(mappedBy = "author")
+    private Set<Comment> comments = new HashSet<>();
 }
