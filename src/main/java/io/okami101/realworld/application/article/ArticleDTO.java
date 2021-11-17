@@ -1,6 +1,10 @@
 package io.okami101.realworld.application.article;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.Lists;
 
 import io.okami101.realworld.application.user.ProfileDTO;
 import io.okami101.realworld.core.article.Article;
@@ -14,6 +18,7 @@ public class ArticleDTO {
     private String description;
     private String body;
     private ProfileDTO author;
+    private List<String> tagList;
     private Instant createdAt;
     private Instant updatedAt;
     private Boolean favorited;
@@ -24,6 +29,8 @@ public class ArticleDTO {
         this.slug = article.getSlug();
         this.description = article.getDescription();
         this.body = article.getBody();
+        this.tagList = Lists.newArrayList(article.getTags()).stream().map(t -> t.getName())
+                .collect(Collectors.toList());
         this.createdAt = article.getCreatedAt();
         this.updatedAt = article.getUpdatedAt();
         this.author = new ProfileDTO(article.getAuthor(), currentUser);

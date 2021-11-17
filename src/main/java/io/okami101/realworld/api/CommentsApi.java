@@ -1,0 +1,57 @@
+package io.okami101.realworld.api;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.okami101.realworld.application.article.CommentsService;
+import io.okami101.realworld.application.article.MultipleCommentsResponse;
+import io.okami101.realworld.application.article.NewCommentRequest;
+import io.okami101.realworld.application.article.SingleCommentResponse;
+import io.okami101.realworld.core.user.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@RestController
+@Tag(name = "Comments")
+@RequestMapping(path = "/articles/{slug}/comments")
+public class CommentsApi {
+
+    @Autowired
+    private CommentsService service;
+
+    @GetMapping
+    @Operation(summary = "Get comments for an article", description = "Get the comments for an article. Auth is optional")
+    @Parameter(name = "slug", description = "Slug of the article that you want to get comments for")
+    public MultipleCommentsResponse list(@PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
+        return new MultipleCommentsResponse(null);
+    }
+
+    @PostMapping
+    @Operation(summary = "Create a comment for an article", description = "Create a comment for an article. Auth is required")
+    @Parameter(name = "slug", description = "Slug of the article that you want to create a comment for")
+    @SecurityRequirement(name = "Bearer")
+    public SingleCommentResponse create(@PathVariable("slug") String slug,
+            @Valid @RequestBody NewCommentRequest request, @AuthenticationPrincipal User currentUser) {
+        return new SingleCommentResponse(null);
+    }
+
+    @DeleteMapping(path = "/{commentId}")
+    @Operation(summary = "Delete a comment for an article", description = "Delete a comment for an article. Auth is required")
+    @Parameter(name = "slug", description = "Slug of the article that you want to delete a comment for")
+    @Parameter(name = "commentId", description = "ID of the comment you want to delete")
+    @SecurityRequirement(name = "Bearer")
+    public SingleCommentResponse delete(@PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
+        return new SingleCommentResponse(null);
+    }
+}

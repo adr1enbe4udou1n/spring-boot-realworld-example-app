@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ArticleRepository extends CrudRepository<Article, Long> {
-    Optional<Article> findByName(String name);
+    Optional<Article> findBySlug(String name);
 }

@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentRepository extends CrudRepository<Comment, Long> {
     Optional<Comment> findById(Long id);
-
-    Optional<Comment> findByName(String name);
 }
