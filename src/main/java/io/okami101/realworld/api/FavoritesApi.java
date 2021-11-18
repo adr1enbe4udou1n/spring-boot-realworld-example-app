@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.okami101.realworld.api.exception.ResourceNotFoundException;
 import io.okami101.realworld.application.article.ArticlesService;
 import io.okami101.realworld.application.article.SingleArticleResponse;
 import io.okami101.realworld.core.user.User;
@@ -30,7 +31,9 @@ public class FavoritesApi {
     @SecurityRequirement(name = "Bearer")
     public SingleArticleResponse favorite(@PathVariable("slug") String slug,
             @AuthenticationPrincipal User currentUser) {
-        return new SingleArticleResponse(null);
+        return service.findBySlug(slug)
+                .map(article -> new SingleArticleResponse(service.favorite(article, currentUser)))
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @DeleteMapping
@@ -39,6 +42,8 @@ public class FavoritesApi {
     @SecurityRequirement(name = "Bearer")
     public SingleArticleResponse unfavorite(@PathVariable("slug") String slug,
             @AuthenticationPrincipal User currentUser) {
-        return new SingleArticleResponse(null);
+        return service.findBySlug(slug)
+                .map(article -> new SingleArticleResponse(service.unfavorite(article, currentUser)))
+                .orElseThrow(ResourceNotFoundException::new);
     }
 }

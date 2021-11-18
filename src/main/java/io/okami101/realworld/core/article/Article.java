@@ -74,6 +74,8 @@ public class Article {
             @JoinColumn(name = "tag_id") })
     private Set<Tag> tags = new HashSet<>();
 
-    @ManyToMany(mappedBy = "favoriteArticles")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "article_favorite", joinColumns = { @JoinColumn(name = "article_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "user_id") })
     private Set<User> favoritedBy = new HashSet<>();
 }

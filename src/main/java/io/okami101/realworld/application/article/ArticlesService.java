@@ -68,4 +68,14 @@ public class ArticlesService {
 
         articles.delete(article);
     }
+
+    public ArticleDTO favorite(Article article, User currentUser) {
+        article.getFavoritedBy().add(currentUser);
+        return new ArticleDTO(articles.save(article), currentUser);
+    }
+
+    public ArticleDTO unfavorite(Article article, User currentUser) {
+        article.getFavoritedBy().remove(currentUser);
+        return new ArticleDTO(articles.save(article), currentUser);
+    }
 }

@@ -64,9 +64,7 @@ public class User {
             @JoinColumn(name = "follower_id") })
     private Set<User> followers = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "article_favorite", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "article_id") })
+    @ManyToMany(mappedBy = "favoritedBy")
     private Set<Article> favoriteArticles = new HashSet<>();
 
     @OneToMany(mappedBy = "author")
