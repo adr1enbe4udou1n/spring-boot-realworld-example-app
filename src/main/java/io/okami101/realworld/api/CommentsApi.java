@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.okami101.realworld.api.exception.ResourceNotFoundException;
+import io.okami101.realworld.application.article.ArticlesService;
 import io.okami101.realworld.application.article.CommentsService;
 import io.okami101.realworld.application.article.MultipleCommentsResponse;
 import io.okami101.realworld.application.article.NewCommentRequest;
@@ -26,6 +28,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Comments")
 @RequestMapping(path = "/articles/{slug}/comments")
 public class CommentsApi {
+
+    @Autowired
+    private ArticlesService articleService;
 
     @Autowired
     private CommentsService service;
@@ -43,7 +48,9 @@ public class CommentsApi {
     @SecurityRequirement(name = "Bearer")
     public SingleCommentResponse create(@PathVariable("slug") String slug,
             @Valid @RequestBody NewCommentRequest request, @AuthenticationPrincipal User currentUser) {
-        return new SingleCommentResponse(null);
+        return articleService.findBySlug(slug)
+                .map(article -> new SingleCommentResponse(service.create(request.getComment(), article, currentUser)))
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @DeleteMapping(path = "/{commentId}")
