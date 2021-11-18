@@ -21,22 +21,22 @@ public class UserService {
     @Autowired
     private JwtService jwtService;
 
-    public User create(NewUser userDto) {
+    public UserDTO create(NewUser userDto) {
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getUsername());
         user.setPassword(passwordHashService.hash(userDto.getPassword()));
 
-        return userRepository.save(user);
+        return getUserWithToken(userRepository.save(user));
     }
 
-    public User update(User currentUser, UpdateUser userDto) {
+    public UserDTO update(User currentUser, UpdateUser userDto) {
         Optional.ofNullable(userDto.getEmail()).ifPresent(currentUser::setEmail);
         Optional.ofNullable(userDto.getUsername()).ifPresent(currentUser::setName);
         Optional.ofNullable(userDto.getBio()).ifPresent(currentUser::setBio);
         Optional.ofNullable(userDto.getImage()).ifPresent(currentUser::setImage);
 
-        return userRepository.save(currentUser);
+        return getUserWithToken(userRepository.save(currentUser));
     }
 
     public Optional<User> checkCredentials(String email, String password) {

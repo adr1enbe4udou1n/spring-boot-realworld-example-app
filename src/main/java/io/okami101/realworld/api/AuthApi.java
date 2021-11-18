@@ -13,7 +13,6 @@ import io.okami101.realworld.application.user.LoginUserRequest;
 import io.okami101.realworld.application.user.NewUserRequest;
 import io.okami101.realworld.application.user.UserResponse;
 import io.okami101.realworld.application.user.UserService;
-import io.okami101.realworld.core.user.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -27,9 +26,7 @@ public class AuthApi extends ApiController {
     @PostMapping
     @Operation(summary = "Register a new user", description = "Register a new user")
     public UserResponse register(@Valid @RequestBody NewUserRequest request) {
-        User user = service.create(request.getUser());
-
-        return new UserResponse(service.getUserWithToken(user));
+        return new UserResponse(service.create(request.getUser()));
     }
 
     @PostMapping(path = "/login")

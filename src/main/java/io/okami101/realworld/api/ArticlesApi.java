@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.okami101.realworld.api.exception.ResourceNotFoundException;
+import io.okami101.realworld.application.article.ArticleDTO;
 import io.okami101.realworld.application.article.ArticlesService;
 import io.okami101.realworld.application.article.MultipleArticlesResponse;
 import io.okami101.realworld.application.article.NewArticleRequest;
@@ -63,7 +65,8 @@ public class ArticlesApi {
     @Operation(summary = "Get an article", description = "Get an article. Auth not required")
     @Parameter(name = "slug", description = "Slug of the article to get")
     public SingleArticleResponse get(@PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
-        return new SingleArticleResponse(null);
+        return service.findBySlug(slug).map(article -> new SingleArticleResponse(new ArticleDTO(article, currentUser)))
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @PostMapping
@@ -80,7 +83,9 @@ public class ArticlesApi {
     @SecurityRequirement(name = "Bearer")
     public SingleArticleResponse update(@Valid @RequestBody UpdateArticleRequest request,
             @PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
-        return new SingleArticleResponse(null);
+        return service.findBySlug(slug)
+                .map(article -> new SingleArticleResponse(service.update(article, request.getArticle(), currentUser)))
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @DeleteMapping(path = "/{slug}")

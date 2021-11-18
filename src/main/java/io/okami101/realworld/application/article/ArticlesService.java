@@ -1,10 +1,13 @@
 package io.okami101.realworld.application.article;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.okami101.realworld.api.exception.ForbiddenException;
 import io.okami101.realworld.core.article.Article;
 import io.okami101.realworld.core.article.ArticleRepository;
 import io.okami101.realworld.core.article.Tag;
@@ -25,19 +28,36 @@ public class ArticlesService {
     private SlugService slugService;
 
     @Transactional
-    public ArticleDTO create(NewArticle article, User currentUser) {
-        Article newArticle = new Article();
-        newArticle.setTitle(article.getTitle());
-        newArticle.setSlug(slugService.generate(article.getTitle()));
-        newArticle.setDescription(article.getDescription());
-        newArticle.setBody(article.getBody());
-        newArticle.setAuthor(currentUser);
+    public ArticleDTO create(NewArticle articleDTO, User currentUser) {
+        Article article = new Article();
+        article.setTitle(articleDTO.getTitle());
+        article.setSlug(slugService.generate(articleDTO.getTitle()));
+        article.setDescription(articleDTO.getDescription());
+        article.setBody(articleDTO.getBody());
+        article.setAuthor(currentUser);
 
-        article.getTagList().forEach(name -> {
-            tags.findByName(name).ifPresentOrElse(t -> newArticle.getTags().add(t),
-                    () -> newArticle.getTags().add(tags.save(new Tag(name))));
+        articleDTO.getTagList().forEach(name -> {
+            tags.findByName(name).ifPresentOrElse(t -> article.getTags().add(t),
+                    () -> article.getTags().add(tags.save(new Tag(name))));
         });
 
-        return new ArticleDTO(articles.save(newArticle), currentUser);
+        return new ArticleDTO(articles.save(article), currentUser);
+    }
+
+    @Transactional
+    public ArticleDTO update(Article article, UpdateArticle articleDTO, User currentUser) {
+        if (!article.getAuthor().equals(currentUser)) {
+            throw new ForbiddenException();
+        }
+
+        Optional.ofNullable(articleDTO.getTitle()).ifPresent(article::setTitle);
+        Optional.ofNullable(articleDTO.getDescription()).ifPresent(article::setDescription);
+        Optional.ofNullable(articleDTO.getBody()).ifPresent(article::setBody);
+
+        return new ArticleDTO(articles.save(article), currentUser);
+    }
+
+    public Optional<Article> findBySlug(String slug) {
+        return articles.findBySlug(slug);
     }
 }

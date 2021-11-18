@@ -36,8 +36,6 @@ public class UserApi extends ApiController {
     @Operation(summary = "Update current user", description = "Updated user information for current user")
     public UserResponse update(@AuthenticationPrincipal User currentUser,
             @Valid @RequestBody UpdateUserRequest request) {
-        service.update(currentUser, request.getUser());
-
-        return new UserResponse(service.getUserWithToken(currentUser));
+        return new UserResponse(service.update(currentUser, request.getUser()));
     }
 }
