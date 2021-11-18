@@ -97,9 +97,13 @@ public class RealworldApplicationTests {
     }
 
     protected Article createArticle(User user) {
+        return createArticleWithSlug(user, "test-title");
+    }
+
+    protected Article createArticleWithSlug(User user, String slug) {
         Article article = new Article();
         article.setTitle("Test Title");
-        article.setSlug("test-title");
+        article.setSlug(slug);
         article.setDescription("Test Description");
         article.setBody("Test Body");
         article.setAuthor(user);

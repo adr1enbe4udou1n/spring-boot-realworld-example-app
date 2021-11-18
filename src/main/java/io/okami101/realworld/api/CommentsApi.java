@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.okami101.realworld.api.exception.ForbiddenException;
 import io.okami101.realworld.api.exception.ResourceNotFoundException;
 import io.okami101.realworld.application.article.ArticlesService;
 import io.okami101.realworld.application.article.CommentsService;
@@ -58,7 +59,18 @@ public class CommentsApi {
     @Parameter(name = "slug", description = "Slug of the article that you want to delete a comment for")
     @Parameter(name = "commentId", description = "ID of the comment you want to delete")
     @SecurityRequirement(name = "Bearer")
-    public SingleCommentResponse delete(@PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
-        return new SingleCommentResponse(null);
+    public void delete(@PathVariable("slug") String slug, @PathVariable("commentId") Long commentId,
+            @AuthenticationPrincipal User currentUser) {
+        articleService.findBySlug(slug)
+                .ifPresentOrElse(article -> service.findById(commentId).ifPresentOrElse(comment -> {
+                    if (!comment.getArticle().equals(article)) {
+                        throw new ForbiddenException();
+                    }
+                    service.delete(comment, currentUser);
+                }, () -> {
+                    throw new ResourceNotFoundException();
+                }), () -> {
+                    throw new ResourceNotFoundException();
+                });
     }
 }
