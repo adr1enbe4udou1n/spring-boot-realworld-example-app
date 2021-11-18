@@ -27,6 +27,10 @@ public class ArticlesService {
     @Autowired
     private SlugService slugService;
 
+    public Optional<Article> findBySlug(String slug) {
+        return articles.findBySlug(slug);
+    }
+
     @Transactional
     public ArticleDTO create(NewArticle articleDTO, User currentUser) {
         Article article = new Article();
@@ -57,7 +61,11 @@ public class ArticlesService {
         return new ArticleDTO(articles.save(article), currentUser);
     }
 
-    public Optional<Article> findBySlug(String slug) {
-        return articles.findBySlug(slug);
+    public void delete(Article article, User currentUser) {
+        if (!article.getAuthor().equals(currentUser)) {
+            throw new ForbiddenException();
+        }
+
+        articles.delete(article);
     }
 }

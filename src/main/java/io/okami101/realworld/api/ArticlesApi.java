@@ -92,7 +92,9 @@ public class ArticlesApi {
     @Operation(summary = "Delete an article", description = "Delete an article. Auth is required")
     @Parameter(name = "slug", description = "Slug of the article to delete")
     @SecurityRequirement(name = "Bearer")
-    public SingleArticleResponse delete(@PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
-        return new SingleArticleResponse(null);
+    public void delete(@PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
+        service.findBySlug(slug).ifPresentOrElse(article -> service.delete(article, currentUser), () -> {
+            throw new ResourceNotFoundException();
+        });
     }
 }
