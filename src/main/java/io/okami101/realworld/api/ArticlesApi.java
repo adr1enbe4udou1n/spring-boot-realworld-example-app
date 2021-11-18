@@ -71,7 +71,7 @@ public class ArticlesApi {
     @SecurityRequirement(name = "Bearer")
     public SingleArticleResponse create(@Valid @RequestBody NewArticleRequest request,
             @AuthenticationPrincipal User currentUser) {
-        return new SingleArticleResponse(null);
+        return new SingleArticleResponse(service.create(request.getArticle(), currentUser));
     }
 
     @PutMapping(path = "/{slug}")

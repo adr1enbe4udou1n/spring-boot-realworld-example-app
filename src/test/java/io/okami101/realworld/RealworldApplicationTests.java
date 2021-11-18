@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import io.okami101.realworld.core.article.Article;
+import io.okami101.realworld.core.article.ArticleRepository;
+import io.okami101.realworld.core.article.CommentRepository;
+import io.okami101.realworld.core.article.TagRepository;
 import io.okami101.realworld.core.service.JwtService;
 import io.okami101.realworld.core.user.PasswordHashService;
 import io.okami101.realworld.core.user.User;
@@ -25,6 +29,15 @@ public class RealworldApplicationTests {
 
     @Autowired
     protected UserRepository userRepository;
+
+    @Autowired
+    protected ArticleRepository articleRepository;
+
+    @Autowired
+    protected TagRepository tagRepository;
+
+    @Autowired
+    protected CommentRepository commentRepository;
 
     @Autowired
     protected PasswordHashService passwordHashService;
@@ -81,5 +94,17 @@ public class RealworldApplicationTests {
         String token = jwtService.encode(user);
 
         return given().contentType(ContentType.JSON).header("Authorization", "Token " + token);
+    }
+
+    protected Article createArticle(User user) {
+        Article article = new Article();
+        article.setTitle("Test Title");
+        article.setSlug("test-title");
+        article.setDescription("Test Description");
+        article.setBody("Test Body");
+        article.setAuthor(user);
+        articleRepository.save(article);
+
+        return article;
     }
 }

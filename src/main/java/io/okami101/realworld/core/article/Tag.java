@@ -8,12 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import io.okami101.realworld.core.user.User;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,8 +30,10 @@ public class Tag {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany
-    @JoinTable(name = "article_tag", joinColumns = { @JoinColumn(name = "tag_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "article_id") })
-    private Set<User> articles = new HashSet<>();
+    public Tag(String name) {
+        this.name = name;
+    }
+
+    @ManyToMany(mappedBy = "tags")
+    private Set<Article> articles = new HashSet<>();
 }

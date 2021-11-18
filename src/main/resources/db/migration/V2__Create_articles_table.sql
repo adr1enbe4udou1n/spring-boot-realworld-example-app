@@ -27,12 +27,12 @@ create table tags (
 create table article_favorite (
     article_id int8 not null,
     user_id int8 not null,
-    primary key (user_id, article_id)
+    primary key (article_id, user_id)
 );
 create table article_tag (
     article_id int8 not null,
     tag_id int8 not null,
-    primary key (tag_id, article_id)
+    primary key (article_id, tag_id)
 );
 
 alter table if exists articles add constraint UK_sn7al9fwhgtf98rvn8nxhjt4f unique (slug);
@@ -43,5 +43,5 @@ alter table if exists comments add constraint FKn2na60ukhs76ibtpt9burkm27 foreig
 
 alter table if exists article_favorite add constraint FKn1usm6hwr86i29w1t0h9q0huk foreign key (article_id) references articles;
 alter table if exists article_favorite add constraint FK8m1q6r31lmkejfp8l8eka6n93 foreign key (user_id) references users;
-alter table if exists article_tag add constraint FKorgtes2l2k1xoykum0ati73r5 foreign key (article_id) references users;
+alter table if exists article_tag add constraint FKorgtes2l2k1xoykum0ati73r5 foreign key (article_id) references articles;
 alter table if exists article_tag add constraint FK3nvn435qf5rn1e9ph51e3r55h foreign key (tag_id) references tags;

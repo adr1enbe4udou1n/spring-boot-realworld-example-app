@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -66,7 +68,9 @@ public class Article {
     @OneToMany(mappedBy = "article")
     private Set<Comment> comments = new HashSet<>();
 
-    @ManyToMany(mappedBy = "articles")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "article_tag", joinColumns = { @JoinColumn(name = "article_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "tag_id") })
     private Set<Tag> tags = new HashSet<>();
 
     @ManyToMany(mappedBy = "favoriteArticles")

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NewArticle {
     @NotBlank
+    @DuplicatedSlugConstraint
     private String title;
 
     @NotBlank

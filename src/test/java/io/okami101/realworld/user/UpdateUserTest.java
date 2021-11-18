@@ -31,9 +31,8 @@ public class UpdateUserTest extends RealworldApplicationTests {
     }
 
     static Stream<UpdateUser> dataProvider() {
-        return Stream.of(
-                new UpdateUser("john.doe", "John Doe", "My Bio", "https://randomuser.me/api/portraits/men/1.jpg"),
-                new UpdateUser("john.doe@example.com", "", "My Bio", "https://randomuser.me/api/portraits/men/1.jpg"));
+        return Stream
+                .of(new UpdateUser("john.doe", "John Doe", "My Bio", "https://randomuser.me/api/portraits/men/1.jpg"));
     }
 
     @Test
