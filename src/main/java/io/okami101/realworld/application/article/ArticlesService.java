@@ -108,7 +108,7 @@ public class ArticlesService {
                     () -> article.getTags().add(tags.save(new Tag(name))));
         });
 
-        return new ArticleDTO(articles.save(article), currentUser);
+        return new ArticleDTO(articles.saveAndFlush(article), currentUser);
     }
 
     @Transactional
@@ -121,7 +121,7 @@ public class ArticlesService {
         Optional.ofNullable(articleDTO.getDescription()).ifPresent(article::setDescription);
         Optional.ofNullable(articleDTO.getBody()).ifPresent(article::setBody);
 
-        return new ArticleDTO(articles.save(article), currentUser);
+        return new ArticleDTO(articles.saveAndFlush(article), currentUser);
     }
 
     public void delete(Article article, User currentUser) {
@@ -134,11 +134,11 @@ public class ArticlesService {
 
     public ArticleDTO favorite(Article article, User currentUser) {
         article.getFavoritedBy().add(currentUser);
-        return new ArticleDTO(articles.save(article), currentUser);
+        return new ArticleDTO(articles.saveAndFlush(article), currentUser);
     }
 
     public ArticleDTO unfavorite(Article article, User currentUser) {
         article.getFavoritedBy().remove(currentUser);
-        return new ArticleDTO(articles.save(article), currentUser);
+        return new ArticleDTO(articles.saveAndFlush(article), currentUser);
     }
 }

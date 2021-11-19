@@ -33,7 +33,7 @@ public class CommentsService {
         comment.setAuthor(currentUser);
         comment.setBody(commentDTO.getBody());
 
-        return new CommentDTO(comments.save(comment), currentUser);
+        return new CommentDTO(comments.saveAndFlush(comment), currentUser);
     }
 
     public void delete(Comment comment, User currentUser) {

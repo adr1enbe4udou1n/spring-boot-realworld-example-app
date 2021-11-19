@@ -27,7 +27,7 @@ public class UserService {
         user.setName(userDto.getUsername());
         user.setPassword(passwordHashService.hash(userDto.getPassword()));
 
-        return getUserWithToken(userRepository.save(user));
+        return getUserWithToken(userRepository.saveAndFlush(user));
     }
 
     public UserDTO update(User currentUser, UpdateUser userDto) {
@@ -36,7 +36,7 @@ public class UserService {
         Optional.ofNullable(userDto.getBio()).ifPresent(currentUser::setBio);
         Optional.ofNullable(userDto.getImage()).ifPresent(currentUser::setImage);
 
-        return getUserWithToken(userRepository.save(currentUser));
+        return getUserWithToken(userRepository.saveAndFlush(currentUser));
     }
 
     public Optional<User> checkCredentials(String email, String password) {
@@ -55,11 +55,11 @@ public class UserService {
 
     public void follow(User source, User target) {
         target.getFollowers().add(source);
-        userRepository.save(target);
+        userRepository.saveAndFlush(target);
     }
 
     public void unfollow(User source, User target) {
         target.getFollowers().remove(source);
-        userRepository.save(target);
+        userRepository.saveAndFlush(target);
     }
 }
