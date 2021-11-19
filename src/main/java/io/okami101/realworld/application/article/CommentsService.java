@@ -1,5 +1,6 @@
 package io.okami101.realworld.application.article;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,11 @@ public class CommentsService {
 
     public Optional<Comment> findById(Long id) {
         return comments.findById(id);
+    }
+
+    public ArrayList<CommentDTO> list(Article article, User currentUser) {
+        return comments.findAllByArticleOrderByIdDesc(article).stream().map(c -> new CommentDTO(c, currentUser))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     public CommentDTO create(NewComment commentDTO, Article article, User currentUser) {

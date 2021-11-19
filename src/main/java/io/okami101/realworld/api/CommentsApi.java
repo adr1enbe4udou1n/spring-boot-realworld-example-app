@@ -40,7 +40,9 @@ public class CommentsApi {
     @Operation(summary = "Get comments for an article", description = "Get the comments for an article. Auth is optional")
     @Parameter(name = "slug", description = "Slug of the article that you want to get comments for")
     public MultipleCommentsResponse list(@PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
-        return new MultipleCommentsResponse(null);
+        return articleService.findBySlug(slug)
+                .map(article -> new MultipleCommentsResponse(service.list(article, currentUser)))
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @PostMapping
