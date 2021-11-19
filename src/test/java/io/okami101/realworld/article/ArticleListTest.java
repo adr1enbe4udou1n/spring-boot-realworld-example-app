@@ -17,7 +17,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ArticleListTest extends RealworldApplicationTests {
 
-    private void createArticles() {
+    private User createArticles() {
         Tag tag1 = tagRepository.save(new Tag("Tag 1"));
         Tag tag2 = tagRepository.save(new Tag("Tag 2"));
         Tag johnTag = tagRepository.save(new Tag("John Tag"));
@@ -62,6 +62,8 @@ public class ArticleListTest extends RealworldApplicationTests {
 
             articleRepository.save(article);
         }
+
+        return john;
     }
 
     @Test
@@ -103,11 +105,37 @@ public class ArticleListTest extends RealworldApplicationTests {
     @Test
     public void can_filter_articles_by_tag() {
         createArticles();
+
+        given().contentType(ContentType.JSON).when().get(baseUrl + "/api/articles?limit=10&offset=0&tag=jane").then()
+                .statusCode(200).body("articles.size()", equalTo(10))
+                .body("articles[0].title", equalTo("Jane Article 20"))
+                .body("articles[0].slug", equalTo("jane-article-20"))
+                .body("articles[0].description", equalTo("Test Description"))
+                .body("articles[0].body", equalTo("Test Body")).body("articles[0].author.username", equalTo("Jane Doe"))
+                .body("articles[0].author.bio", equalTo("Jane Bio"))
+                .body("articles[0].author.image", equalTo("https://randomuser.me/api/portraits/women/1.jpg"))
+                .body("articles[0].author.following", equalTo(false)).body("articles[0].favorited", equalTo(false))
+                .body("articles[0].favoritesCount", equalTo(0))
+                .body("articles[0].tagList", equalTo(Arrays.asList(new String[] { "Jane Tag", "Tag 1", "Tag 2" })))
+                .body("articlesCount", equalTo(20));
     }
 
     @Test
     public void can_filter_articles_by_favorited() {
-        createArticles();
+        User user = createArticles();
+
+        actingAs(user).contentType(ContentType.JSON).when()
+                .get(baseUrl + "/api/articles?limit=10&offset=0&favorited=john").then().statusCode(200)
+                .body("articles.size()", equalTo(5)).body("articles[0].title", equalTo("Jane Article 16"))
+                .body("articles[0].slug", equalTo("jane-article-16"))
+                .body("articles[0].description", equalTo("Test Description"))
+                .body("articles[0].body", equalTo("Test Body")).body("articles[0].author.username", equalTo("Jane Doe"))
+                .body("articles[0].author.bio", equalTo("Jane Bio"))
+                .body("articles[0].author.image", equalTo("https://randomuser.me/api/portraits/women/1.jpg"))
+                .body("articles[0].author.following", equalTo(true)).body("articles[0].favorited", equalTo(true))
+                .body("articles[0].favoritesCount", equalTo(1))
+                .body("articles[0].tagList", equalTo(Arrays.asList(new String[] { "Jane Tag", "Tag 1", "Tag 2" })))
+                .body("articlesCount", equalTo(5));
     }
 
     @Test
@@ -117,6 +145,19 @@ public class ArticleListTest extends RealworldApplicationTests {
 
     @Test
     public void can_paginate_feed() {
-        createArticles();
+        User user = createArticles();
+
+        actingAs(user).contentType(ContentType.JSON).when().get(baseUrl + "/api/articles/feed?limit=10&offset=0").then()
+                .statusCode(200).body("articles.size()", equalTo(10))
+                .body("articles[0].title", equalTo("Jane Article 20"))
+                .body("articles[0].slug", equalTo("jane-article-20"))
+                .body("articles[0].description", equalTo("Test Description"))
+                .body("articles[0].body", equalTo("Test Body")).body("articles[0].author.username", equalTo("Jane Doe"))
+                .body("articles[0].author.bio", equalTo("Jane Bio"))
+                .body("articles[0].author.image", equalTo("https://randomuser.me/api/portraits/women/1.jpg"))
+                .body("articles[0].author.following", equalTo(true)).body("articles[0].favorited", equalTo(false))
+                .body("articles[0].favoritesCount", equalTo(0))
+                .body("articles[0].tagList", equalTo(Arrays.asList(new String[] { "Jane Tag", "Tag 1", "Tag 2" })))
+                .body("articlesCount", equalTo(20));
     }
 }

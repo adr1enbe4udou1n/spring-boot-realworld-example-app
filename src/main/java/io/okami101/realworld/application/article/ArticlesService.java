@@ -43,7 +43,7 @@ public class ArticlesService {
         return articles.findBySlug(slug);
     }
 
-    public Tuple<ArrayList<ArticleDTO>, Long> list(int offset, int limit, String author, String tag, String favoritedBy,
+    public Tuple<ArrayList<ArticleDTO>, Long> list(int offset, int limit, String author, String tag, String favorited,
             User currentUser) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
@@ -55,20 +55,19 @@ public class ArticlesService {
         subQuery.select(rootSub.get("id"));
 
         if (author != null) {
-            Join<Article, User> user = rootSub.join("author", JoinType.LEFT);
-            subQuery.where(cb.like(cb.lower(user.get("name")), "%" + author.toLowerCase() + "%"));
+            Join<Article, User> join = rootSub.join("author", JoinType.LEFT);
+            subQuery.where(cb.like(cb.lower(join.get("name")), "%" + author.toLowerCase() + "%"));
         }
 
-        // if (tag != null) {
-        // select.where(criteriaBuilder.equal(from.get("tags").get("name"), tag));
-        // countQuery.where(criteriaBuilder.equal(from.get("tags").get("name"), tag));
-        // }
+        if (tag != null) {
+            Join<Article, Tag> join = rootSub.join("tags", JoinType.LEFT);
+            subQuery.where(cb.like(cb.lower(join.get("name")), "%" + tag.toLowerCase() + "%"));
+        }
 
-        // if (favoritedBy != null) {
-        // select.where(criteriaBuilder.equal(from.get("favoritedBy"), favoritedBy));
-        // countQuery.where(criteriaBuilder.equal(from.get("favoritedBy"),
-        // favoritedBy));
-        // }
+        if (favorited != null) {
+            Join<Article, User> join = rootSub.join("favoritedBy", JoinType.LEFT);
+            subQuery.where(cb.like(cb.lower(join.get("name")), "%" + favorited.toLowerCase() + "%"));
+        }
 
         query.select(root).where(cb.in(root.get("id")).value(subQuery)).orderBy(cb.desc(root.get("id")));
 
@@ -79,11 +78,24 @@ public class ArticlesService {
     }
 
     public Tuple<ArrayList<ArticleDTO>, Long> feed(int offset, int limit, User currentUser) {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Article> select = getQuery(criteriaBuilder);
-        CriteriaQuery<Long> countQuery = getCountQuery(criteriaBuilder);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
 
-        return getList(offset, limit, currentUser, select, countQuery);
+        CriteriaQuery<Article> query = cb.createQuery(Article.class);
+        Root<Article> root = query.from(Article.class);
+
+        Subquery<Long> subQuery = query.subquery(Long.class);
+        Root<Article> rootSub = subQuery.from(Article.class);
+        subQuery.select(rootSub.get("id"));
+
+        Join<Article, User> join = rootSub.join("author", JoinType.LEFT).join("followers", JoinType.LEFT);
+        subQuery.where(cb.equal(join.get("id"), currentUser.getId()));
+
+        query.select(root).where(cb.in(root.get("id")).value(subQuery)).orderBy(cb.desc(root.get("id")));
+
+        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        countQuery.select(cb.count(countQuery.from(Article.class))).where(cb.in(root.get("id")).value(subQuery));
+
+        return getList(offset, limit, currentUser, query, countQuery);
     }
 
     private Tuple<ArrayList<ArticleDTO>, Long> getList(int offset, int limit, User currentUser,
