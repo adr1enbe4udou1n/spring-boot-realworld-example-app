@@ -85,6 +85,19 @@ public class ArticleListTest extends RealworldApplicationTests {
     @Test
     public void can_filter_articles_by_author() {
         createArticles();
+
+        given().contentType(ContentType.JSON).when().get(baseUrl + "/api/articles?limit=10&offset=0&author=john").then()
+                .statusCode(200).body("articles.size()", equalTo(10))
+                .body("articles[0].title", equalTo("John Article 30"))
+                .body("articles[0].slug", equalTo("john-article-30"))
+                .body("articles[0].description", equalTo("Test Description"))
+                .body("articles[0].body", equalTo("Test Body")).body("articles[0].author.username", equalTo("John Doe"))
+                .body("articles[0].author.bio", equalTo("John Bio"))
+                .body("articles[0].author.image", equalTo("https://randomuser.me/api/portraits/men/1.jpg"))
+                .body("articles[0].author.following", equalTo(false)).body("articles[0].favorited", equalTo(false))
+                .body("articles[0].favoritesCount", equalTo(0))
+                .body("articles[0].tagList", equalTo(Arrays.asList(new String[] { "John Tag", "Tag 1", "Tag 2" })))
+                .body("articlesCount", equalTo(30));
     }
 
     @Test

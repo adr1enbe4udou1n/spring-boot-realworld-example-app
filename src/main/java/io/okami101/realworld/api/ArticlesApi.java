@@ -47,12 +47,11 @@ public class ArticlesApi {
     @Parameter(name = "favorited", description = "Filter by favorites of a user (username)")
     public MultipleArticlesResponse list(@RequestParam(value = "offset", defaultValue = "0") int offset,
             @RequestParam(value = "limit", defaultValue = "20") int limit,
+            @RequestParam(value = "author", required = false) String author,
             @RequestParam(value = "tag", required = false) String tag,
             @RequestParam(value = "favorited", required = false) String favoritedBy,
-            @RequestParam(value = "author", required = false) String author,
             @AuthenticationPrincipal User currentUser) {
-        Tuple<ArrayList<ArticleDTO>, Integer> result = service.list(offset, limit, tag, favoritedBy, author,
-                currentUser);
+        Tuple<ArrayList<ArticleDTO>, Long> result = service.list(offset, limit, author, tag, favoritedBy, currentUser);
         return new MultipleArticlesResponse(result.getFirst(), result.getSecond());
     }
 
@@ -63,7 +62,7 @@ public class ArticlesApi {
     @SecurityRequirement(name = "Bearer")
     public MultipleArticlesResponse feed(@RequestParam(value = "offset", defaultValue = "0") int offset,
             @RequestParam(value = "limit", defaultValue = "20") int limit, @AuthenticationPrincipal User currentUser) {
-        Tuple<ArrayList<ArticleDTO>, Integer> result = service.feed(offset, limit, currentUser);
+        Tuple<ArrayList<ArticleDTO>, Long> result = service.feed(offset, limit, currentUser);
         return new MultipleArticlesResponse(result.getFirst(), result.getSecond());
     }
 

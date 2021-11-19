@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,24 +43,67 @@ public class ArticlesService {
         return articles.findBySlug(slug);
     }
 
-    public Tuple<ArrayList<ArticleDTO>, Integer> list(int offset, int limit, String tag, String favoritedBy,
-            String author, User currentUser) {
-        TypedQuery<Article> query = em.createQuery("from articles", Article.class);
+    public Tuple<ArrayList<ArticleDTO>, Long> list(int offset, int limit, String author, String tag, String favoritedBy,
+            User currentUser) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
 
-        return paginator(offset, limit, currentUser, query);
+        CriteriaQuery<Article> query = cb.createQuery(Article.class);
+        Root<Article> root = query.from(Article.class);
+
+        Subquery<Long> subQuery = query.subquery(Long.class);
+        Root<Article> rootSub = subQuery.from(Article.class);
+        subQuery.select(rootSub.get("id"));
+
+        if (author != null) {
+            Join<Article, User> user = rootSub.join("author", JoinType.LEFT);
+            subQuery.where(cb.like(cb.lower(user.get("name")), "%" + author.toLowerCase() + "%"));
+        }
+
+        // if (tag != null) {
+        // select.where(criteriaBuilder.equal(from.get("tags").get("name"), tag));
+        // countQuery.where(criteriaBuilder.equal(from.get("tags").get("name"), tag));
+        // }
+
+        // if (favoritedBy != null) {
+        // select.where(criteriaBuilder.equal(from.get("favoritedBy"), favoritedBy));
+        // countQuery.where(criteriaBuilder.equal(from.get("favoritedBy"),
+        // favoritedBy));
+        // }
+
+        query.select(root).where(cb.in(root.get("id")).value(subQuery)).orderBy(cb.desc(root.get("id")));
+
+        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        countQuery.select(cb.count(countQuery.from(Article.class))).where(cb.in(root.get("id")).value(subQuery));
+
+        return getList(offset, limit, currentUser, query, countQuery);
     }
 
-    public Tuple<ArrayList<ArticleDTO>, Integer> feed(int offset, int limit, User currentUser) {
-        TypedQuery<Article> query = em.createQuery("from articles", Article.class);
+    public Tuple<ArrayList<ArticleDTO>, Long> feed(int offset, int limit, User currentUser) {
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Article> select = getQuery(criteriaBuilder);
+        CriteriaQuery<Long> countQuery = getCountQuery(criteriaBuilder);
 
-        return paginator(offset, limit, currentUser, query);
+        return getList(offset, limit, currentUser, select, countQuery);
     }
 
-    private Tuple<ArrayList<ArticleDTO>, Integer> paginator(int offset, int limit, User currentUser,
-            TypedQuery<Article> query) {
-        return new Tuple<ArrayList<ArticleDTO>, Integer>(query.setFirstResult(offset).setMaxResults(limit)
-                .getResultList().stream().map(a -> new ArticleDTO(a, currentUser))
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll), query.getResultList().size());
+    private Tuple<ArrayList<ArticleDTO>, Long> getList(int offset, int limit, User currentUser,
+            CriteriaQuery<Article> select, CriteriaQuery<Long> countQuery) {
+
+        return new Tuple<ArrayList<ArticleDTO>, Long>(em.createQuery(select).setFirstResult(offset)
+                .setMaxResults(Math.min(limit, 20)).getResultList().stream().map(a -> new ArticleDTO(a, currentUser))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll),
+                em.createQuery(countQuery).getSingleResult());
+    }
+
+    private CriteriaQuery<Article> getQuery(CriteriaBuilder criteriaBuilder) {
+        CriteriaQuery<Article> criteriaQuery = criteriaBuilder.createQuery(Article.class);
+        Root<Article> from = criteriaQuery.from(Article.class);
+        return criteriaQuery.select(from).orderBy(criteriaBuilder.desc(from.get("id")));
+    }
+
+    private CriteriaQuery<Long> getCountQuery(CriteriaBuilder criteriaBuilder) {
+        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+        return countQuery.select(criteriaBuilder.count(countQuery.from(Article.class)));
     }
 
     @Transactional

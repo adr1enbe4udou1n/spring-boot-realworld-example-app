@@ -8,9 +8,9 @@ import lombok.Getter;
 @Getter
 public class MultipleArticlesResponse {
     private List<ArticleDTO> articles;
-    private int articlesCount;
+    private Long articlesCount;
 
-    public MultipleArticlesResponse(ArrayList<ArticleDTO> articles, int count) {
+    public MultipleArticlesResponse(ArrayList<ArticleDTO> articles, Long count) {
         this.articles = articles;
         this.articlesCount = count;
     }

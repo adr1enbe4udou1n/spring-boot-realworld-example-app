@@ -17,7 +17,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import io.okami101.realworld.core.article.Article;
@@ -46,7 +45,6 @@ public class User {
 
     private String password;
 
-    @Type(type = "text")
     private String bio;
 
     private String image;

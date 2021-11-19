@@ -18,7 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import io.okami101.realworld.core.user.User;
@@ -37,45 +36,43 @@ import javax.persistence.FetchType;
 @Table(name = "articles")
 
 public class Article {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private User author;
+        @ManyToOne(fetch = FetchType.EAGER)
+        private User author;
 
-    @Column(nullable = false)
-    private String title;
+        @Column(nullable = false)
+        private String title;
 
-    @Column(nullable = false, unique = true)
-    private String slug;
+        @Column(nullable = false, unique = true)
+        private String slug;
 
-    @Column(nullable = false)
-    @Type(type = "text")
-    private String description;
+        @Column(nullable = false)
+        private String description;
 
-    @Column(nullable = false)
-    @Type(type = "text")
-    private String body;
+        @Column(nullable = false)
+        private String body;
 
-    @CreationTimestamp
-    @Column(nullable = false)
-    private Instant createdAt;
+        @CreationTimestamp
+        @Column(nullable = false)
+        private Instant createdAt;
 
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private Instant updatedAt;
+        @UpdateTimestamp
+        @Column(nullable = false)
+        private Instant updatedAt;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
-    private Set<Comment> comments = new HashSet<>();
+        @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+        private Set<Comment> comments = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "article_tag", joinColumns = { @JoinColumn(name = "article_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "tag_id") })
-    private Set<Tag> tags = new HashSet<>();
+        @ManyToMany(fetch = FetchType.EAGER)
+        @JoinTable(name = "article_tag", joinColumns = { @JoinColumn(name = "article_id") }, inverseJoinColumns = {
+                        @JoinColumn(name = "tag_id") })
+        private Set<Tag> tags = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "article_favorite", joinColumns = { @JoinColumn(name = "article_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "user_id") })
-    private Set<User> favoritedBy = new HashSet<>();
+        @ManyToMany(fetch = FetchType.EAGER)
+        @JoinTable(name = "article_favorite", joinColumns = { @JoinColumn(name = "article_id") }, inverseJoinColumns = {
+                        @JoinColumn(name = "user_id") })
+        private Set<User> favoritedBy = new HashSet<>();
 }
