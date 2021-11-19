@@ -1,7 +1,10 @@
 package io.okami101.realworld.application.article;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import io.okami101.realworld.core.article.Tag;
 import io.okami101.realworld.core.article.TagRepository;
 import io.okami101.realworld.core.service.SlugService;
 import io.okami101.realworld.core.user.User;
+import io.okami101.realworld.utils.Tuple;
 
 @Service
 public class ArticlesService {
@@ -27,8 +31,31 @@ public class ArticlesService {
     @Autowired
     private SlugService slugService;
 
+    @Autowired
+    private EntityManager em;
+
     public Optional<Article> findBySlug(String slug) {
         return articles.findBySlug(slug);
+    }
+
+    public Tuple<ArrayList<ArticleDTO>, Integer> list(int offset, int limit, String tag, String favoritedBy,
+            String author, User currentUser) {
+        TypedQuery<Article> query = em.createQuery("from articles", Article.class);
+
+        return paginator(offset, limit, currentUser, query);
+    }
+
+    public Tuple<ArrayList<ArticleDTO>, Integer> feed(int offset, int limit, User currentUser) {
+        TypedQuery<Article> query = em.createQuery("from articles", Article.class);
+
+        return paginator(offset, limit, currentUser, query);
+    }
+
+    private Tuple<ArrayList<ArticleDTO>, Integer> paginator(int offset, int limit, User currentUser,
+            TypedQuery<Article> query) {
+        return new Tuple<ArrayList<ArticleDTO>, Integer>(query.setFirstResult(offset).setMaxResults(limit)
+                .getResultList().stream().map(a -> new ArticleDTO(a, currentUser))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll), query.getResultList().size());
     }
 
     @Transactional
