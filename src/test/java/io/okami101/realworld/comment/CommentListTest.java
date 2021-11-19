@@ -34,6 +34,18 @@ public class CommentListTest extends RealworldApplicationTests {
             comment = commentRepository.save(comment);
         }
 
+        Article otherArticle = createArticleWithSlug(user, "other-title");
+
+        // Create 10 comments
+        for (int i = 1; i <= 10; i++) {
+            Comment comment = new Comment();
+            comment.setArticle(otherArticle);
+            comment.setAuthor(user);
+            comment.setBody("John Comment " + i);
+
+            comment = commentRepository.save(comment);
+        }
+
         given().contentType(ContentType.JSON).when().get(baseUrl + "/api/articles/test-title/comments").then()
                 .statusCode(200).body("comments.size()", equalTo(10))
                 .body("comments[0].body", equalTo("John Comment 10"))
