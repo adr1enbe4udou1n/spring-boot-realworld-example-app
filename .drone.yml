@@ -14,7 +14,6 @@ steps:
       JWT_SECRET_KEY: "MDIyZGQwMDdjNDA3ZDQwYTc4MGYyNjdkZjFkZTJkMzRhMDhmMTNkN2QyMWY5ZjMxMTYwZjM5ZDI1YjE5ZjhiYQ=="
     commands:
       - sleep 10 # Wait for PostgreSQL service starting
-      - gradle test
       - gradle build
 
   - name: image

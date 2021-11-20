@@ -1,5 +1,5 @@
-FROM openjdk:11-jdk-alpine
+FROM openjdk:11
 
-COPY build/libs/*.jar app.jar
+COPY build/libs/realworld-0.0.1-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "/app.jar"]
