@@ -30,7 +30,6 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-security:1.5.12'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	implementation 'com.github.slugify:slugify:2.4'
-	implementation 'info.picocli:picocli-spring-boot-starter:4.6.2'
 	implementation 'com.github.javafaker:javafaker:1.0.2'
 
 	compileOnly 'org.projectlombok:lombok'
@@ -51,8 +50,4 @@ dependencies {
 
 test {
 	useJUnitPlatform()
-}
-
-bootRun {
-    mainClass = 'io.okami101.realworld.ApiApplication'
 }
