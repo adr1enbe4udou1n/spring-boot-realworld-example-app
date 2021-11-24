@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class SingleArticleResponse {
-    private ArticleDTO article;
+  private ArticleDTO article;
 
-    public SingleArticleResponse(ArticleDTO article) {
-        this.article = article;
-    }
+  public SingleArticleResponse(ArticleDTO article) {
+    this.article = article;
+  }
 }

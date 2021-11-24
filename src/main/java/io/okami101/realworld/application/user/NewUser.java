@@ -3,7 +3,6 @@ package io.okami101.realworld.application.user;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,15 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewUser {
-    @NotBlank
-    @Email
-    @DuplicatedEmailConstraint
-    private String email;
+  @NotBlank @Email @DuplicatedEmailConstraint private String email;
 
-    @NotBlank
-    private String username;
+  @NotBlank private String username;
 
-    @NotBlank
-    @Size(min = 8)
-    private String password;
+  @NotBlank
+  @Size(min = 8)
+  private String password;
 }

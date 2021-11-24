@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class ProfileResponse {
-    private ProfileDTO profile;
+  private ProfileDTO profile;
 
-    public ProfileResponse(ProfileDTO profile) {
-        this.profile = profile;
-    }
+  public ProfileResponse(ProfileDTO profile) {
+    this.profile = profile;
+  }
 }

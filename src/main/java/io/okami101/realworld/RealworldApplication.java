@@ -8,13 +8,14 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 @SpringBootApplication
 public class RealworldApplication {
 
-	public static void main(String[] args) {
-		if (args.length == 1 && args[0].equals("--seed")) {
-			new SpringApplicationBuilder(RealworldApplication.class).web(WebApplicationType.NONE).run(args);
-			return;
-		}
+  public static void main(String[] args) {
+    if (args.length == 1 && args[0].equals("--seed")) {
+      new SpringApplicationBuilder(RealworldApplication.class)
+          .web(WebApplicationType.NONE)
+          .run(args);
+      return;
+    }
 
-		SpringApplication.run(RealworldApplication.class, args);
-	}
-
+    SpringApplication.run(RealworldApplication.class, args);
+  }
 }

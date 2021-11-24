@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class UserResponse {
-    private UserDTO user;
+  private UserDTO user;
 
-    public UserResponse(UserDTO user) {
-        this.user = user;
-    }
+  public UserResponse(UserDTO user) {
+    this.user = user;
+  }
 }

@@ -1,7 +1,6 @@
 package io.okami101.realworld.application.article;
 
 import javax.validation.constraints.NotBlank;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewComment {
-    @NotBlank
-    private String body;
+  @NotBlank private String body;
 }

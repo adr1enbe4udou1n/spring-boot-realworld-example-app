@@ -8,9 +8,9 @@ import javax.validation.Payload;
 @Constraint(validatedBy = DuplicatedSlugValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DuplicatedSlugConstraint {
-    String message() default "duplicated slug";
+  String message() default "duplicated slug";
 
-    Class<?>[] groups() default {};
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  Class<? extends Payload>[] payload() default {};
 }

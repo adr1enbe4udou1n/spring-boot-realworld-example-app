@@ -2,7 +2,6 @@ package io.okami101.realworld.application.user;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserRequest {
-    @Valid
-    @NotNull
-    private UpdateUser user;
+  @Valid @NotNull private UpdateUser user;
 }

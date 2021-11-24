@@ -14,6 +14,7 @@ steps:
       JWT_SECRET_KEY: "MDIyZGQwMDdjNDA3ZDQwYTc4MGYyNjdkZjFkZTJkMzRhMDhmMTNkN2QyMWY5ZjMxMTYwZjM5ZDI1YjE5ZjhiYQ=="
     commands:
       - sleep 10 # Wait for PostgreSQL service starting
+      - gradle verGJF
       - gradle build
 
   - name: image
@@ -29,18 +30,18 @@ steps:
     depends_on:
       - build
 
-  # - name: deploy
-  #   image: appleboy/drone-ssh
-  #   settings:
-  #     host: front.okami101.io
-  #     port: 2222
-  #     username: okami
-  #     key:
-  #       from_secret: swarm_ssh_key
-  #     script:
-  #       - docker service update --image registry.okami101.io/adr1enbe4udou1n/spring-boot-realworld:latest springbootrealworld_app --with-registry-auth
-  #   depends_on:
-  #     - image
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host: front.okami101.io
+      port: 2222
+      username: okami
+      key:
+        from_secret: swarm_ssh_key
+      script:
+        - docker service update --image registry.okami101.io/adr1enbe4udou1n/spring-boot-realworld:latest springbootrealworld_app --with-registry-auth
+    depends_on:
+      - image
 
 services:
   - name: db

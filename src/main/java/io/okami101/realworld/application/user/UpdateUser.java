@@ -1,7 +1,6 @@
 package io.okami101.realworld.application.user;
 
 import javax.validation.constraints.Email;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,13 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUser {
-    @Email
-    @DuplicatedEmailConstraint
-    private String email;
+  @Email @DuplicatedEmailConstraint private String email;
 
-    private String username;
+  private String username;
 
-    private String bio;
+  private String bio;
 
-    private String image;
+  private String image;
 }

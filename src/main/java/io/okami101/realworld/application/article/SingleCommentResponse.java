@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class SingleCommentResponse {
-    private CommentDTO comment;
+  private CommentDTO comment;
 
-    public SingleCommentResponse(CommentDTO comment) {
-        this.comment = comment;
-    }
+  public SingleCommentResponse(CommentDTO comment) {
+    this.comment = comment;
+  }
 }

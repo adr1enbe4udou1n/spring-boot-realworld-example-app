@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Tuple<K, V> {
-    private K first;
-    private V second;
+  private K first;
+  private V second;
 }

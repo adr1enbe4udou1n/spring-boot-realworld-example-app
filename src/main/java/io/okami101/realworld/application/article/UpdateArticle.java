@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateArticle {
-    private String title;
+  private String title;
 
-    private String description;
+  private String description;
 
-    private String body;
+  private String body;
 }
