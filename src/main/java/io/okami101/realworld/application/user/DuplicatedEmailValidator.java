@@ -26,7 +26,7 @@ public class DuplicatedEmailValidator
                 user = (User) principal;
               }
 
-              return user != null && u.getId() == user.getId();
+              return user != null && u.getId().equals(user.getId());
             })
         .orElse(true);
   }

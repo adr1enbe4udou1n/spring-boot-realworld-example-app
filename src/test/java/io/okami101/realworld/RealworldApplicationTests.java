@@ -13,6 +13,7 @@ import io.okami101.realworld.core.user.UserRepository;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,9 +42,16 @@ public class RealworldApplicationTests {
   @Autowired protected Flyway flyway;
 
   @BeforeEach
-  public void cleanUp() {
-    flyway.clean();
+  public void migrate() {
     flyway.migrate();
+  }
+
+  @AfterEach
+  public void cleanup() {
+    tagRepository.deleteAll();
+    commentRepository.deleteAll();
+    articleRepository.deleteAll();
+    userRepository.deleteAll();
   }
 
   protected User createJohnUser() {

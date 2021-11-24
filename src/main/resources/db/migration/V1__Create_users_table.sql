@@ -12,5 +12,5 @@ create table users (
     primary key (id)
 );
 alter table if exists users add constraint UK_6dotkott2kjsp8vw4d0m25fb7 unique (email);
-alter table if exists follower_user add constraint FK69r22uoit0gd4aiiy7knsvdje foreign key (follower_id) references users;
-alter table if exists follower_user add constraint FKny04t54t69f2krvt7xt40yiw0 foreign key (following_id) references users;
+alter table if exists follower_user add constraint FK69r22uoit0gd4aiiy7knsvdje foreign key (follower_id) references users on delete cascade;
+alter table if exists follower_user add constraint FKny04t54t69f2krvt7xt40yiw0 foreign key (following_id) references users on delete cascade;

@@ -41,7 +41,7 @@ alter table if exists articles add constraint FKe02fs2ut6qqoabfhj325wcjul foreig
 alter table if exists comments add constraint FKk4ib6syde10dalk7r7xdl0m5p foreign key (article_id) references articles;
 alter table if exists comments add constraint FKn2na60ukhs76ibtpt9burkm27 foreign key (author_id) references users;
 
-alter table if exists article_favorite add constraint FKn1usm6hwr86i29w1t0h9q0huk foreign key (article_id) references articles;
-alter table if exists article_favorite add constraint FK8m1q6r31lmkejfp8l8eka6n93 foreign key (user_id) references users;
-alter table if exists article_tag add constraint FKorgtes2l2k1xoykum0ati73r5 foreign key (article_id) references articles;
-alter table if exists article_tag add constraint FK3nvn435qf5rn1e9ph51e3r55h foreign key (tag_id) references tags;
+alter table if exists article_favorite add constraint FKn1usm6hwr86i29w1t0h9q0huk foreign key (article_id) references articles on delete cascade;
+alter table if exists article_favorite add constraint FK8m1q6r31lmkejfp8l8eka6n93 foreign key (user_id) references users on delete cascade;
+alter table if exists article_tag add constraint FKorgtes2l2k1xoykum0ati73r5 foreign key (article_id) references articles on delete cascade;
+alter table if exists article_tag add constraint FK3nvn435qf5rn1e9ph51e3r55h foreign key (tag_id) references tags on delete cascade;
