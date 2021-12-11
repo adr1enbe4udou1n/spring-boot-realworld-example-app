@@ -1,9 +1,9 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.0'
+	id 'org.springframework.boot'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'com.github.johnrengelman.processes' version '0.5.0'
-	id 'org.springdoc.openapi-gradle-plugin' version '1.3.3'
-	id "com.diffplug.spotless" version "6.0.0"
+	id 'com.github.johnrengelman.processes'
+	id 'org.springdoc.openapi-gradle-plugin'
+	id "com.diffplug.spotless"
 	id 'java'
 }
 
@@ -27,18 +27,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.flywaydb:flyway-core'
-	implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
-	implementation 'org.springdoc:springdoc-openapi-security:1.5.12'
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-	implementation 'com.github.slugify:slugify:2.4'
-	implementation 'com.github.javafaker:javafaker:1.0.2'
+	implementation 'org.springdoc:springdoc-openapi-ui:_'
+	implementation 'org.springdoc:springdoc-openapi-security:_'
+	implementation 'io.jsonwebtoken:jjwt-api:_'
+	implementation 'com.github.slugify:slugify:_'
+	implementation 'com.github.javafaker:javafaker:_'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	
 	runtimeOnly 'org.postgresql:postgresql'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:_'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:_'
 
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -46,7 +46,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
-	testImplementation 'io.rest-assured:rest-assured:4.4.0'
+	testImplementation 'io.rest-assured:rest-assured:_'
 }
 
 test {
