@@ -66,7 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/v3/**",
             "/articles/**",
             "/profiles/**",
-            "/tags")
+            "/tags",
+            "/")
         .permitAll()
         .anyRequest()
         .authenticated();
