@@ -58,6 +58,8 @@ public class ArticlesService {
 
     CriteriaQuery<Article> query = cb.createQuery(Article.class);
     Root<Article> root = query.from(Article.class);
+    root.fetch("tags", JoinType.LEFT);
+    root.fetch("favoritedBy", JoinType.LEFT);
 
     Subquery<Long> subQuery = query.subquery(Long.class);
     Root<Article> rootSub = subQuery.from(Article.class);
