@@ -97,7 +97,6 @@ public class ArticleListTest extends RealworldApplicationTests {
         .body("articlesCount", equalTo(50));
   }
 
-  @Test
   public void can_filter_articles_by_author() {
     createArticles();
 
@@ -124,7 +123,6 @@ public class ArticleListTest extends RealworldApplicationTests {
         .body("articlesCount", equalTo(30));
   }
 
-  @Test
   public void can_filter_articles_by_tag() {
     createArticles();
 
@@ -152,7 +150,6 @@ public class ArticleListTest extends RealworldApplicationTests {
         .body("articlesCount", equalTo(20));
   }
 
-  @Test
   public void can_filter_articles_by_favorited() {
     User user = createArticles();
 
@@ -180,7 +177,6 @@ public class ArticleListTest extends RealworldApplicationTests {
         .body("articlesCount", equalTo(5));
   }
 
-  @Test
   public void guest_cannot_paginate_feed() {
     given()
         .contentType(ContentType.JSON)
@@ -190,7 +186,6 @@ public class ArticleListTest extends RealworldApplicationTests {
         .statusCode(401);
   }
 
-  @Test
   public void can_paginate_feed() {
     User user = createArticles();
 
