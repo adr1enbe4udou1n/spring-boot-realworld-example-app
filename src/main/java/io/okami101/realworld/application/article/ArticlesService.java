@@ -14,8 +14,10 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,14 +58,44 @@ public class ArticlesService {
 
     CriteriaQuery<Article> query = cb.createQuery(Article.class);
     Root<Article> root = query.from(Article.class);
-    root.fetch("author", JoinType.LEFT).fetch("followers", JoinType.LEFT);
-    root.fetch("tags", JoinType.LEFT);
-    root.fetch("favoritedBy", JoinType.LEFT);
+    // root.fetch("author", JoinType.LEFT).fetch("followers", JoinType.LEFT);
+    // root.fetch("tags", JoinType.LEFT);
+    // root.fetch("favoritedBy", JoinType.LEFT);
 
-    query.select(root).orderBy(cb.desc(root.get("id")));
+    Subquery<Long> subQuery = query.subquery(Long.class);
+    Root<Article> rootSub = subQuery.from(Article.class);
+    subQuery.select(rootSub.get("id"));
+
+    if (author != null) {
+      Join<Article, User> join = rootSub.join("author", JoinType.LEFT);
+      subQuery.where(cb.like(cb.lower(join.get("name")), "%" + author.toLowerCase() + "%"));
+    }
+
+    if (tag != null) {
+      Join<Article, Tag> join = rootSub.join("tags", JoinType.LEFT);
+      subQuery.where(cb.like(cb.lower(join.get("name")), "%" + tag.toLowerCase() + "%"));
+    }
+
+    if (favorited != null) {
+      Join<Article, User> join = rootSub.join("favoritedBy", JoinType.LEFT);
+      subQuery.where(cb.like(cb.lower(join.get("name")), "%" + favorited.toLowerCase() + "%"));
+    }
+
+    if (following) {
+      Join<Article, User> join =
+          rootSub.join("author", JoinType.LEFT).join("followers", JoinType.LEFT);
+      subQuery.where(cb.equal(join.get("id"), currentUser.getId()));
+    }
+
+    query
+        .select(root)
+        .where(cb.in(root.get("id")).value(subQuery))
+        .orderBy(cb.desc(root.get("id")));
 
     CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-    countQuery.select(cb.count(countQuery.from(Article.class)));
+    countQuery
+        .select(cb.count(countQuery.from(Article.class)))
+        .where(cb.in(root.get("id")).value(subQuery));
 
     return new Tuple<ArrayList<ArticleDTO>, Long>(
         em
