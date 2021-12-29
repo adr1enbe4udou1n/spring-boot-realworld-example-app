@@ -9,6 +9,7 @@ import io.okami101.realworld.core.service.SlugService;
 import io.okami101.realworld.core.user.User;
 import io.okami101.realworld.utils.Tuple;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
@@ -17,7 +18,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,57 +56,70 @@ public class ArticlesService {
       User currentUser) {
     CriteriaBuilder cb = em.getCriteriaBuilder();
 
-    CriteriaQuery<Article> query = cb.createQuery(Article.class);
+    CriteriaQuery<Long> query = cb.createQuery(Long.class);
     Root<Article> root = query.from(Article.class);
-    root.fetch("author", JoinType.LEFT).fetch("followers", JoinType.LEFT);
-    root.fetch("tags", JoinType.LEFT);
-    root.fetch("favoritedBy", JoinType.LEFT);
 
-    Subquery<Long> subQuery = query.subquery(Long.class);
-    Root<Article> rootSub = subQuery.from(Article.class);
-    subQuery.select(rootSub.get("id"));
+    CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+    Root<Article> countRoot = countQuery.from(Article.class);
+
+    filterQuery(query, root, author, tag, favorited, following, currentUser);
+    filterQuery(countQuery, countRoot, author, tag, favorited, following, currentUser);
+
+    List<Long> ids =
+        em.createQuery(query.select(root.get("id")).orderBy(cb.desc(root.get("id"))))
+            .setFirstResult(offset)
+            .setMaxResults(Math.min(limit, 20))
+            .getResultList();
+
+    CriteriaQuery<Article> articleQuery = cb.createQuery(Article.class);
+    Root<Article> articleRoot = articleQuery.from(Article.class);
+    articleRoot.fetch("author", JoinType.LEFT).fetch("followers", JoinType.LEFT);
+    articleRoot.fetch("tags", JoinType.LEFT);
+    articleRoot.fetch("favoritedBy", JoinType.LEFT);
+    articleQuery
+        .where(articleRoot.get("id").in(ids))
+        .orderBy(cb.desc(root.get("id")))
+        .distinct(true);
+
+    countQuery.select(cb.count(countRoot));
+
+    return new Tuple<ArrayList<ArticleDTO>, Long>(
+        em.createQuery(articleQuery).getResultList().stream()
+            .map(a -> new ArticleDTO(a, currentUser))
+            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll),
+        em.createQuery(countQuery).getSingleResult());
+  }
+
+  private void filterQuery(
+      CriteriaQuery<Long> query,
+      Root<Article> root,
+      String author,
+      String tag,
+      String favorited,
+      Boolean following,
+      User currentUser) {
+    CriteriaBuilder cb = em.getCriteriaBuilder();
 
     if (author != null) {
-      Join<Article, User> join = rootSub.join("author", JoinType.LEFT);
-      subQuery.where(cb.like(cb.lower(join.get("name")), "%" + author.toLowerCase() + "%"));
+      Join<Article, User> join = root.join("author", JoinType.LEFT);
+      query.where(cb.like(cb.lower(join.get("name")), "%" + author.toLowerCase() + "%"));
     }
 
     if (tag != null) {
-      Join<Article, Tag> join = rootSub.join("tags", JoinType.LEFT);
-      subQuery.where(cb.like(cb.lower(join.get("name")), "%" + tag.toLowerCase() + "%"));
+      Join<Article, Tag> join = root.join("tags", JoinType.LEFT);
+      query.where(cb.like(cb.lower(join.get("name")), "%" + tag.toLowerCase() + "%"));
     }
 
     if (favorited != null) {
-      Join<Article, User> join = rootSub.join("favoritedBy", JoinType.LEFT);
-      subQuery.where(cb.like(cb.lower(join.get("name")), "%" + favorited.toLowerCase() + "%"));
+      Join<Article, User> join = root.join("favoritedBy", JoinType.LEFT);
+      query.where(cb.like(cb.lower(join.get("name")), "%" + favorited.toLowerCase() + "%"));
     }
 
     if (following) {
       Join<Article, User> join =
-          rootSub.join("author", JoinType.LEFT).join("followers", JoinType.LEFT);
-      subQuery.where(cb.equal(join.get("id"), currentUser.getId()));
+          root.join("author", JoinType.LEFT).join("followers", JoinType.LEFT);
+      query.where(cb.equal(join.get("id"), currentUser.getId()));
     }
-
-    query
-        .select(root)
-        .where(cb.in(root.get("id")).value(subQuery))
-        .orderBy(cb.desc(root.get("id")));
-
-    CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-    countQuery
-        .select(cb.count(countQuery.from(Article.class)))
-        .where(cb.in(root.get("id")).value(subQuery));
-
-    return new Tuple<ArrayList<ArticleDTO>, Long>(
-        em
-            .createQuery(query)
-            .setFirstResult(offset)
-            .setMaxResults(Math.min(limit, 20))
-            .getResultList()
-            .stream()
-            .map(a -> new ArticleDTO(a, currentUser))
-            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll),
-        em.createQuery(countQuery).getSingleResult());
   }
 
   @Transactional
