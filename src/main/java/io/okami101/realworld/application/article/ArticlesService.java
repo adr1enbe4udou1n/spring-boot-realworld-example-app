@@ -10,6 +10,7 @@ import io.okami101.realworld.core.user.User;
 import io.okami101.realworld.utils.Tuple;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -57,6 +58,9 @@ public class ArticlesService {
 
     CriteriaQuery<Article> query = cb.createQuery(Article.class);
     Root<Article> root = query.from(Article.class);
+    root.fetch("author", JoinType.LEFT).fetch("followers", JoinType.LEFT);
+    root.fetch("tags", JoinType.LEFT);
+    root.fetch("favoritedBy", JoinType.LEFT);
 
     Subquery<Long> subQuery = query.subquery(Long.class);
     Root<Article> rootSub = subQuery.from(Article.class);
@@ -113,16 +117,18 @@ public class ArticlesService {
     article.setDescription(articleDTO.getDescription());
     article.setBody(articleDTO.getBody());
     article.setAuthor(currentUser);
+    article.setTags(
+        articleDTO.getTagList().stream()
+            .map(
+                name -> {
+                  Optional<Tag> tag = tags.findByName(name);
 
-    articleDTO
-        .getTagList()
-        .forEach(
-            name -> {
-              tags.findByName(name)
-                  .ifPresentOrElse(
-                      t -> article.getTags().add(t),
-                      () -> article.getTags().add(tags.save(new Tag(name))));
-            });
+                  if (tag.isPresent()) {
+                    return tag.get();
+                  }
+                  return tags.save(new Tag(name));
+                })
+            .collect(Collectors.toSet()));
 
     return new ArticleDTO(articles.saveAndFlush(article), currentUser);
   }

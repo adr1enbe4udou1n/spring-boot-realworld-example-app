@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,8 +34,7 @@ public class Article {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  private User author;
+  @ManyToOne private User author;
 
   @Column(nullable = false)
   private String title;
@@ -61,14 +59,14 @@ public class Article {
   @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
   private Set<Comment> comments = new HashSet<>();
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany
   @JoinTable(
       name = "article_tag",
       joinColumns = {@JoinColumn(name = "article_id")},
       inverseJoinColumns = {@JoinColumn(name = "tag_id")})
   private Set<Tag> tags = new HashSet<>();
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany
   @JoinTable(
       name = "article_favorite",
       joinColumns = {@JoinColumn(name = "article_id")},
