@@ -4,7 +4,7 @@ name: default
 
 steps:
   - name: build
-    image: gradle:jdk11
+    image: gradle:jdk17
     environment:
       DB_HOST: db
       DB_PORT: 5432
