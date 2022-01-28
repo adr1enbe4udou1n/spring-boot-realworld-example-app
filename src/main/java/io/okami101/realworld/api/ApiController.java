@@ -7,14 +7,12 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.swagger.v3.oas.models.tags.Tag;
-
 import java.util.Comparator;
 import java.util.stream.Collectors;
-
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 
-@OpenAPIDefinition(servers = { @Server(url = "/api") })
+@OpenAPIDefinition(servers = {@Server(url = "/api")})
 public class ApiController {
   @Bean
   public OpenAPI customOpenAPI() {
@@ -33,9 +31,10 @@ public class ApiController {
 
   @Bean
   public OpenApiCustomiser sortTagsAlphabetically() {
-    return openApi -> openApi.setTags(openApi.getTags()
-        .stream()
-        .sorted(Comparator.comparing(Tag::getName))
-        .collect(Collectors.toList()));
+    return openApi ->
+        openApi.setTags(
+            openApi.getTags().stream()
+                .sorted(Comparator.comparing(Tag::getName))
+                .collect(Collectors.toList()));
   }
 }
