@@ -1,4 +1,4 @@
-FROM openjdk:17-slim
+FROM openjdk:18-slim
 
 COPY build/libs/realworld-0.0.1-SNAPSHOT.jar app.jar
 

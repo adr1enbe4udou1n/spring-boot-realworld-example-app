@@ -47,7 +47,8 @@ dependencies {
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'io.rest-assured:rest-assured:_'
-	testImplementation 'io.rest-assured:rest-assured-all:_'
+	testImplementation 'io.rest-assured:json-path:_'
+	testImplementation 'io.rest-assured:xml-path:_'
 }
 
 test {
