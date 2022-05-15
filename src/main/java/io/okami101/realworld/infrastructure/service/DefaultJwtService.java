@@ -8,6 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.okami101.realworld.core.service.JwtService;
 import io.okami101.realworld.core.user.User;
+import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DefaultJwtService implements JwtService {
-  private String secret;
+  private Key secret;
   private int sessionTime;
 
   @Autowired
   public DefaultJwtService(
       @Value("${jwt.secret}") String secret, @Value("${jwt.sessionTime}") int sessionTime) {
-    this.secret = secret;
+    this.secret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     this.sessionTime = sessionTime;
   }
 
@@ -32,7 +33,7 @@ public class DefaultJwtService implements JwtService {
     return Jwts.builder()
         .setSubject(user.getId().toString())
         .setExpiration(expireTimeFromNow())
-        .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)), SignatureAlgorithm.HS512)
+        .signWith(this.secret, SignatureAlgorithm.HS512)
         .compact();
   }
 
@@ -40,7 +41,7 @@ public class DefaultJwtService implements JwtService {
   public Optional<String> parse(String token) {
     try {
       Jws<Claims> claimsJws =
-          Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
+          Jwts.parserBuilder().setSigningKey(this.secret).build().parseClaimsJws(token);
       return Optional.ofNullable(claimsJws.getBody().getSubject());
     } catch (Exception e) {
       return Optional.empty();

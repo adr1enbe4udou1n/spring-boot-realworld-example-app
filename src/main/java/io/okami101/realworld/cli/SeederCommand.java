@@ -69,13 +69,13 @@ public class SeederCommand implements CommandLineRunner {
     users.forEach(
         user -> {
           for (int i = 0; i < faker.number().numberBetween(1, 3); i++) {
-            user.getFollowers().add(users.get(faker.number().numberBetween(0, users.size() - 1)));
+            user.getFollowers().add(users.get(faker.random().nextInt(users.size())));
             userRepository.save(user);
           }
         });
 
     for (int i = 0; i < 30; i++) {
-      tagRepository.save(new Tag(faker.lorem().words(2).stream().collect(Collectors.joining(" "))));
+      tagRepository.save(new Tag(faker.lorem().word() + i));
     }
 
     List<Tag> tags = tagRepository.findAll();
@@ -88,22 +88,22 @@ public class SeederCommand implements CommandLineRunner {
       article.setSlug(slugService.generate(title));
       article.setDescription(faker.lorem().paragraph());
       article.setBody(faker.lorem().paragraphs(5).stream().collect(Collectors.joining("\n")));
-      article.setAuthor(users.get(faker.number().numberBetween(0, 49)));
+      article.setAuthor(users.get(faker.random().nextInt(users.size())));
 
-      for (int j = 0; j < faker.number().numberBetween(1, 3); j++) {
-        article.getTags().add(tags.get(faker.number().numberBetween(0, tags.size() - 1)));
+      for (int j = 0; j < faker.number().numberBetween(0, 3); j++) {
+        article.getTags().add(tags.get(faker.random().nextInt(tags.size())));
       }
 
-      for (int j = 0; j < faker.number().numberBetween(1, 10); j++) {
-        article.getFavoritedBy().add(users.get(faker.number().numberBetween(0, users.size() - 1)));
+      for (int j = 0; j < faker.number().numberBetween(0, 5); j++) {
+        article.getFavoritedBy().add(users.get(faker.random().nextInt(users.size())));
       }
 
       articleRepository.save(article);
 
-      for (int j = 0; j < faker.number().numberBetween(5, 10); j++) {
+      for (int j = 0; j < faker.number().numberBetween(0, 10); j++) {
         Comment comment = new Comment();
         comment.setBody(faker.lorem().paragraph());
-        comment.setAuthor(users.get(faker.number().numberBetween(0, users.size() - 1)));
+        comment.setAuthor(users.get(faker.random().nextInt(users.size())));
         comment.setArticle(article);
         commentRepository.save(comment);
       }
