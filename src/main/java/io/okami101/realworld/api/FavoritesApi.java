@@ -24,7 +24,10 @@ public class FavoritesApi {
   @Autowired private ArticlesService service;
 
   @PostMapping
-  @Operation(summary = "Favorite an article", description = "Favorite an article. Auth is required")
+  @Operation(
+      operationId = "CreateArticleFavorite",
+      summary = "Favorite an article",
+      description = "Favorite an article. Auth is required")
   @Parameter(name = "slug", description = "Slug of the article that you want to favorite")
   @SecurityRequirement(name = "Bearer")
   public SingleArticleResponse favorite(
@@ -37,6 +40,7 @@ public class FavoritesApi {
 
   @DeleteMapping
   @Operation(
+      operationId = "DeleteArticleFavorite",
       summary = "Unfavorite an article",
       description = "Unfavorite an article. Auth is required")
   @Parameter(name = "slug", description = "Slug of the article that you want to unfavorite")

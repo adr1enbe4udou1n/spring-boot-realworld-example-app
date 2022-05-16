@@ -17,7 +17,10 @@ public class TagsApi {
   @Autowired public TagsService service;
 
   @GetMapping
-  @Operation(summary = "Get tags", description = "Get tags. Auth not required")
+  @Operation(
+      operationId = "GetTags",
+      summary = "Get tags",
+      description = "Get tags. Auth not required")
   public TagsResponse list() {
     return new TagsResponse(service.getAllTagNames());
   }

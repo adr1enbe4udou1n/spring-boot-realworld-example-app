@@ -27,6 +27,7 @@ public class ProfilesApi {
 
   @GetMapping
   @Operation(
+      operationId = "GetProfileByUsername",
       summary = "Get profile",
       description = "Get a profile of a user of the system. Auth is optional")
   @Parameter(
@@ -41,7 +42,10 @@ public class ProfilesApi {
   }
 
   @PostMapping(path = "/follow")
-  @Operation(summary = "Follow a user", description = "Follow a user by username")
+  @Operation(
+      operationId = "FollowUserByUsername",
+      summary = "Follow a user",
+      description = "Follow a user by username")
   @Parameter(name = "username", description = "Username of the profile you want to follow")
   @SecurityRequirement(name = "Bearer")
   public ProfileResponse follow(
@@ -58,7 +62,10 @@ public class ProfilesApi {
   }
 
   @DeleteMapping(path = "/follow")
-  @Operation(summary = "Unfollow a user", description = "Unfollow a user by username")
+  @Operation(
+      operationId = "UnfollowUserByUsername",
+      summary = "Unfollow a user",
+      description = "Unfollow a user by username")
   @Parameter(name = "username", description = "Username of the profile you want to unfollow")
   @SecurityRequirement(name = "Bearer")
   public ProfileResponse unfollow(

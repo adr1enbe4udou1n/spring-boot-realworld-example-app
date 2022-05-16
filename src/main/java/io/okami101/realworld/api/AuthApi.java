@@ -21,13 +21,19 @@ public class AuthApi extends ApiController {
   @Autowired private UserService service;
 
   @PostMapping
-  @Operation(summary = "Register a new user", description = "Register a new user")
+  @Operation(
+      operationId = "CreateUser",
+      summary = "Register a new user",
+      description = "Register a new user")
   public UserResponse register(@Valid @RequestBody NewUserRequest request) {
     return new UserResponse(service.create(request.getUser()));
   }
 
   @PostMapping(path = "/login")
-  @Operation(summary = "Existing user login", description = "Login for existing user")
+  @Operation(
+      operationId = "Login",
+      summary = "Existing user login",
+      description = "Login for existing user")
   public UserResponse register(@Valid @RequestBody LoginUserRequest request) {
     return service
         .checkCredentials(request.getUser().getEmail(), request.getUser().getPassword())

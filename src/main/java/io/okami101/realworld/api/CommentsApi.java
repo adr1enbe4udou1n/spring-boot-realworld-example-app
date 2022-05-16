@@ -34,6 +34,7 @@ public class CommentsApi {
 
   @GetMapping
   @Operation(
+      operationId = "GetArticleComments",
       summary = "Get comments for an article",
       description = "Get the comments for an article. Auth is optional")
   @Parameter(name = "slug", description = "Slug of the article that you want to get comments for")
@@ -47,6 +48,7 @@ public class CommentsApi {
 
   @PostMapping
   @Operation(
+      operationId = "CreateArticleComment",
       summary = "Create a comment for an article",
       description = "Create a comment for an article. Auth is required")
   @Parameter(
@@ -68,6 +70,7 @@ public class CommentsApi {
 
   @DeleteMapping(path = "/{commentId}")
   @Operation(
+      operationId = "DeleteArticleComment",
       summary = "Delete a comment for an article",
       description = "Delete a comment for an article. Auth is required")
   @Parameter(

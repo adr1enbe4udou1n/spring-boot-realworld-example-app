@@ -36,6 +36,7 @@ public class ArticlesApi {
 
   @GetMapping
   @Operation(
+      operationId = "GetArticles",
       summary = "Get recent articles globally",
       description =
           "Get most recent articles globally. Use query parameters to filter results. Auth is optional")
@@ -58,6 +59,7 @@ public class ArticlesApi {
 
   @GetMapping(path = "/feed")
   @Operation(
+      operationId = "GetArticlesFeed",
       summary = "Get recent articles from users you follow",
       description =
           "Get most recent articles from users you follow. Use query parameters to limit. Auth is required")
@@ -73,7 +75,10 @@ public class ArticlesApi {
   }
 
   @GetMapping(path = "/{slug}")
-  @Operation(summary = "Get an article", description = "Get an article. Auth not required")
+  @Operation(
+      operationId = "GetArticle",
+      summary = "Get an article",
+      description = "Get an article. Auth not required")
   @Parameter(name = "slug", description = "Slug of the article to get")
   public SingleArticleResponse get(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
@@ -84,7 +89,10 @@ public class ArticlesApi {
   }
 
   @PostMapping
-  @Operation(summary = "Create an article", description = "Create an article. Auth is required")
+  @Operation(
+      operationId = "CreateArticle",
+      summary = "Create an article",
+      description = "Create an article. Auth is required")
   @SecurityRequirement(name = "Bearer")
   public SingleArticleResponse create(
       @Valid @RequestBody NewArticleRequest request, @AuthenticationPrincipal User currentUser) {
@@ -92,7 +100,10 @@ public class ArticlesApi {
   }
 
   @PutMapping(path = "/{slug}")
-  @Operation(summary = "Update an article", description = "Update an article. Auth is required")
+  @Operation(
+      operationId = "UpdateArticle",
+      summary = "Update an article",
+      description = "Update an article. Auth is required")
   @Parameter(name = "slug", description = "Slug of the article to update")
   @SecurityRequirement(name = "Bearer")
   public SingleArticleResponse update(
@@ -109,7 +120,10 @@ public class ArticlesApi {
   }
 
   @DeleteMapping(path = "/{slug}")
-  @Operation(summary = "Delete an article", description = "Delete an article. Auth is required")
+  @Operation(
+      operationId = "DeleteArticle",
+      summary = "Delete an article",
+      description = "Delete an article. Auth is required")
   @Parameter(name = "slug", description = "Slug of the article to delete")
   @SecurityRequirement(name = "Bearer")
   public void delete(@PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
