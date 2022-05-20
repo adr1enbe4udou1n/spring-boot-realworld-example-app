@@ -1,6 +1,5 @@
 package io.okami101.realworld.cli;
 
-import net.datafaker.Faker;
 import io.okami101.realworld.core.article.Article;
 import io.okami101.realworld.core.article.ArticleRepository;
 import io.okami101.realworld.core.article.Comment;
@@ -14,6 +13,7 @@ import io.okami101.realworld.core.user.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+import net.datafaker.Faker;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
