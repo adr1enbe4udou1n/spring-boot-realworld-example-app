@@ -31,7 +31,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-security:_'
 	implementation 'io.jsonwebtoken:jjwt-api:_'
 	implementation 'com.github.slugify:slugify:_'
-	implementation 'com.github.javafaker:javafaker:_'
+	implementation 'net.datafaker:datafaker:_'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

@@ -1,6 +1,6 @@
 package io.okami101.realworld.cli;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 import io.okami101.realworld.core.article.Article;
 import io.okami101.realworld.core.article.ArticleRepository;
 import io.okami101.realworld.core.article.Comment;
