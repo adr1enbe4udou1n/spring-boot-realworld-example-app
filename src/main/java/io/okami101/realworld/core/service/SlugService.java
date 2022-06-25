@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SlugService {
   public String generate(String title) {
-    Slugify slg = new Slugify();
+    Slugify slg = Slugify.builder().build();
 
     return slg.slugify(title);
   }
