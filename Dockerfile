@@ -1,5 +1,7 @@
 FROM openjdk:18-slim
 
-COPY build/libs/realworld-0.0.1-SNAPSHOT.jar app.jar
+WORKDIR /app
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+COPY build/libs/realworld-0.0.1-SNAPSHOT.jar realworld.jar
+
+ENTRYPOINT ["java", "-jar", "/app/realworld.jar"]
