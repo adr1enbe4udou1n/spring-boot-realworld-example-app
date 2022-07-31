@@ -18,9 +18,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ArticlesService {
@@ -33,15 +33,18 @@ public class ArticlesService {
 
   @Autowired private EntityManager em;
 
+  @Transactional(readOnly = true)
   public Optional<Article> findBySlug(String slug) {
     return articles.findBySlug(slug);
   }
 
+  @Transactional(readOnly = true)
   public Tuple<ArrayList<ArticleDTO>, Long> list(
       int offset, int limit, String author, String tag, String favorited, User currentUser) {
     return filtredList(offset, limit, author, tag, favorited, false, currentUser);
   }
 
+  @Transactional(readOnly = true)
   public Tuple<ArrayList<ArticleDTO>, Long> feed(int offset, int limit, User currentUser) {
     return filtredList(offset, limit, null, null, null, true, currentUser);
   }
@@ -159,6 +162,7 @@ public class ArticlesService {
     return new ArticleDTO(articles.saveAndFlush(article), currentUser);
   }
 
+  @Transactional
   public void delete(Article article, User currentUser) {
     if (!article.getAuthor().equals(currentUser)) {
       throw new ForbiddenException();
@@ -167,11 +171,13 @@ public class ArticlesService {
     articles.delete(article);
   }
 
+  @Transactional
   public ArticleDTO favorite(Article article, User currentUser) {
     article.getFavoritedBy().add(currentUser);
     return new ArticleDTO(articles.saveAndFlush(article), currentUser);
   }
 
+  @Transactional
   public ArticleDTO unfavorite(Article article, User currentUser) {
     article.getFavoritedBy().remove(currentUser);
     return new ArticleDTO(articles.saveAndFlush(article), currentUser);
