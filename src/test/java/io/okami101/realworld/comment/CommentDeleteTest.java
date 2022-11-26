@@ -28,7 +28,7 @@ public class CommentDeleteTest extends RealworldApplicationTests {
         .when()
         .delete(baseUrl + "/api/articles/test-title/comments/1")
         .then()
-        .statusCode(404);
+        .statusCode(401);
   }
 
   @Test
@@ -41,7 +41,7 @@ public class CommentDeleteTest extends RealworldApplicationTests {
         .when()
         .delete(baseUrl + "/api/articles/test-title/comments/1")
         .then()
-        .statusCode(404);
+        .statusCode(401);
   }
 
   @Test
@@ -61,7 +61,7 @@ public class CommentDeleteTest extends RealworldApplicationTests {
         .when()
         .delete(baseUrl + "/api/articles/test-title/comments/" + comment.getId())
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 
   @Test
@@ -82,7 +82,7 @@ public class CommentDeleteTest extends RealworldApplicationTests {
         .when()
         .delete(baseUrl + "/api/articles/test-title/comments/" + comment.getId())
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 
   @Test

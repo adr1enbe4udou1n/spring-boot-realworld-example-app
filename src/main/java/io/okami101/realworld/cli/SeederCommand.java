@@ -43,7 +43,6 @@ public class SeederCommand implements CommandLineRunner {
       return;
     }
 
-    flyway.clean();
     flyway.migrate();
 
     Faker faker = new Faker();

@@ -15,7 +15,7 @@ public class ArticleGetTest extends RealworldApplicationTests {
         .when()
         .get(baseUrl + "/api/articles/test-title")
         .then()
-        .statusCode(404);
+        .statusCode(401);
   }
 
   @Test

@@ -33,7 +33,7 @@ public class CommentCreateTest extends RealworldApplicationTests {
         .when()
         .post(baseUrl + "/api/articles/test-title/comments")
         .then()
-        .statusCode(404);
+        .statusCode(401);
   }
 
   @ParameterizedTest

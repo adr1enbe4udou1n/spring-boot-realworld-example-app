@@ -26,7 +26,7 @@ public class ProfileFollowTest extends RealworldApplicationTests {
         .when()
         .post(baseUrl + "/api/profiles/celeb_Jane Doe/follow")
         .then()
-        .statusCode(404);
+        .statusCode(401);
   }
 
   @Test

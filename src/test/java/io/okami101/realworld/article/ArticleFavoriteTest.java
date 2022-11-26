@@ -28,7 +28,7 @@ public class ArticleFavoriteTest extends RealworldApplicationTests {
         .when()
         .post(baseUrl + "/api/articles/test-title/favorite")
         .then()
-        .statusCode(404);
+        .statusCode(401);
   }
 
   @Test

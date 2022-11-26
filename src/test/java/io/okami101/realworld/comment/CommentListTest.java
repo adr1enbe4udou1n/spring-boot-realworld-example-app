@@ -18,7 +18,7 @@ public class CommentListTest extends RealworldApplicationTests {
         .when()
         .get(baseUrl + "/api/articles/test-title/comments")
         .then()
-        .statusCode(404);
+        .statusCode(401);
   }
 
   @Test

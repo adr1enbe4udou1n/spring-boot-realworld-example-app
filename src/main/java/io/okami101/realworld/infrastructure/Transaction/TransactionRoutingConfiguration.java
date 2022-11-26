@@ -75,6 +75,9 @@ public class TransactionRoutingConfiguration {
         Map.of(
             "hibernate.physical_naming_strategy",
             "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"));
+    entityManagerFactory.setJpaPropertyMap(
+        Map.of("hibernate.id.db_structure_naming_strategy", "single"));
+    // hibernate.id.db_structure_naming_strategy
 
     return entityManagerFactory;
   }

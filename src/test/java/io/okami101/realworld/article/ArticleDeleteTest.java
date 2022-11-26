@@ -28,7 +28,7 @@ public class ArticleDeleteTest extends RealworldApplicationTests {
         .when()
         .delete(baseUrl + "/api/articles/test-title")
         .then()
-        .statusCode(404);
+        .statusCode(401);
   }
 
   @Test
@@ -40,7 +40,7 @@ public class ArticleDeleteTest extends RealworldApplicationTests {
         .when()
         .delete(baseUrl + "/api/articles/test-title")
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 
   @Test

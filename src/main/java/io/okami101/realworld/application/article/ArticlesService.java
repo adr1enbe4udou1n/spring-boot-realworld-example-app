@@ -11,8 +11,8 @@ import io.okami101.realworld.utils.Tuple;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,70 +59,72 @@ public class ArticlesService {
       User currentUser) {
     CriteriaBuilder cb = em.getCriteriaBuilder();
 
-    CriteriaQuery<Long> query = cb.createQuery(Long.class);
-    Root<Article> root = query.from(Article.class);
+    CriteriaQuery<Article> cq = cb.createQuery(Article.class);
+    Root<Article> root = cq.from(Article.class);
 
-    CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-    Root<Article> countRoot = countQuery.from(Article.class);
+    CriteriaQuery<Long> countCq = cb.createQuery(Long.class);
+    Root<Article> countRoot = countCq.from(Article.class);
+    countCq.select(cb.count(countRoot));
 
-    filterQuery(query, root, author, tag, favorited, following, currentUser);
-    filterQuery(countQuery, countRoot, author, tag, favorited, following, currentUser);
+    var predicates = getPredicates(author, tag, favorited, following, currentUser, cb, root);
+    var predicatesCount =
+        getPredicates(author, tag, favorited, following, currentUser, cb, countRoot);
 
-    List<Long> ids =
-        em.createQuery(query.select(root.get("id")).orderBy(cb.desc(root.get("id"))))
+    if (!predicates.isEmpty()) {
+      cq.where(predicates.toArray(new Predicate[0]));
+    }
+
+    if (!predicatesCount.isEmpty()) {
+      countCq.where(predicatesCount.toArray(new Predicate[0]));
+    }
+
+    var articles =
+        em.createQuery(cq.orderBy(cb.desc(root.get("id"))))
             .setFirstResult(offset)
             .setMaxResults(Math.min(limit, 20))
             .getResultList();
 
-    CriteriaQuery<Article> articleQuery = cb.createQuery(Article.class);
-    Root<Article> articleRoot = articleQuery.from(Article.class);
-    articleRoot.fetch("author", JoinType.LEFT).fetch("followers", JoinType.LEFT);
-    articleRoot.fetch("tags", JoinType.LEFT);
-    articleRoot.fetch("favoritedBy", JoinType.LEFT);
-    articleQuery
-        .where(articleRoot.get("id").in(ids))
-        .orderBy(cb.desc(root.get("id")))
-        .distinct(true);
+    var articlesCount = em.createQuery(countCq).getSingleResult();
 
-    countQuery.select(cb.count(countRoot));
-
-    return new Tuple<ArrayList<ArticleDTO>, Long>(
-        em.createQuery(articleQuery).getResultList().stream()
+    ArrayList<ArticleDTO> articleDTOs =
+        articles.stream()
             .map(a -> new ArticleDTO(a, currentUser))
-            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll),
-        em.createQuery(countQuery).getSingleResult());
+            .collect(Collectors.toCollection(ArrayList::new));
+
+    return new Tuple<>(articleDTOs, articlesCount);
   }
 
-  private void filterQuery(
-      CriteriaQuery<Long> query,
-      Root<Article> root,
+  private List<Predicate> getPredicates(
       String author,
       String tag,
       String favorited,
       Boolean following,
-      User currentUser) {
-    CriteriaBuilder cb = em.getCriteriaBuilder();
+      User currentUser,
+      CriteriaBuilder cb,
+      Root<Article> root) {
+    List<Predicate> predicates = new ArrayList<>();
 
     if (author != null) {
-      Join<Article, User> join = root.join("author", JoinType.LEFT);
-      query.where(cb.like(cb.lower(join.get("name")), "%" + author.toLowerCase() + "%"));
+      var join = root.join("author", JoinType.LEFT);
+      predicates.add(cb.equal(join.get("name"), author));
     }
 
     if (tag != null) {
-      Join<Article, Tag> join = root.join("tags", JoinType.LEFT);
-      query.where(cb.like(cb.lower(join.get("name")), "%" + tag.toLowerCase() + "%"));
+      var join = root.join("tags", JoinType.LEFT);
+      predicates.add(cb.equal(join.get("name"), tag));
     }
 
     if (favorited != null) {
-      Join<Article, User> join = root.join("favoritedBy", JoinType.LEFT);
-      query.where(cb.like(cb.lower(join.get("name")), "%" + favorited.toLowerCase() + "%"));
+      var join = root.join("favoritedBy", JoinType.LEFT);
+      predicates.add(cb.equal(join.get("name"), favorited));
     }
 
     if (following) {
-      Join<Article, User> join =
-          root.join("author", JoinType.LEFT).join("followers", JoinType.LEFT);
-      query.where(cb.equal(join.get("id"), currentUser.getId()));
+      var join = root.join("author", JoinType.LEFT).join("followers", JoinType.LEFT);
+      predicates.add(cb.equal(join.get("id"), currentUser.getId()));
     }
+
+    return predicates;
   }
 
   @Transactional

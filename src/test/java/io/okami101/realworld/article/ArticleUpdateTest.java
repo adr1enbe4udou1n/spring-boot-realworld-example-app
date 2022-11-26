@@ -30,7 +30,7 @@ public class ArticleUpdateTest extends RealworldApplicationTests {
         .when()
         .put(baseUrl + "/api/articles/test-title")
         .then()
-        .statusCode(404);
+        .statusCode(401);
   }
 
   @Test
@@ -43,7 +43,7 @@ public class ArticleUpdateTest extends RealworldApplicationTests {
         .when()
         .put(baseUrl + "/api/articles/test-title")
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 
   @Test
