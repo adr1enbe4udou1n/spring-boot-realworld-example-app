@@ -1,15 +1,13 @@
 plugins {
+	id 'java'
 	id 'org.springframework.boot'
 	id 'io.spring.dependency-management'
-	id 'com.github.johnrengelman.processes'
-	id 'org.springdoc.openapi-gradle-plugin'
 	id "com.diffplug.spotless"
-	id 'java'
 }
 
 group = 'io.okami101'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 configurations {
 	compileOnly {
