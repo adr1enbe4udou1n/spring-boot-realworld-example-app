@@ -1,11 +1,12 @@
 package io.okami101.realworld.api.exception;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -34,7 +35,7 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex,
       HttpHeaders headers,
-      HttpStatus status,
+      HttpStatusCode status,
       WebRequest request) {
     List<String> errors = new ArrayList<String>();
     for (FieldError error : ex.getBindingResult().getFieldErrors()) {
@@ -52,7 +53,7 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleMissingServletRequestParameter(
       MissingServletRequestParameterException ex,
       HttpHeaders headers,
-      HttpStatus status,
+      HttpStatusCode status,
       WebRequest request) {
     String error = ex.getParameterName() + " parameter is missing";
 
@@ -88,7 +89,7 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
   protected ResponseEntity<Object> handleNoHandlerFoundException(
-      NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+      NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
     String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
 
     ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), error);
@@ -99,7 +100,7 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
       HttpRequestMethodNotSupportedException ex,
       HttpHeaders headers,
-      HttpStatus status,
+      HttpStatusCode status,
       WebRequest request) {
     StringBuilder builder = new StringBuilder();
     builder.append(ex.getMethod());
@@ -115,7 +116,7 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
       HttpMediaTypeNotSupportedException ex,
       HttpHeaders headers,
-      HttpStatus status,
+      HttpStatusCode status,
       WebRequest request) {
     StringBuilder builder = new StringBuilder();
     builder.append(ex.getContentType());

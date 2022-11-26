@@ -1,9 +1,9 @@
 package io.okami101.realworld.infrastructure.Transaction;
 
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.persistence.EntityManagerFactory;
 import java.util.HashMap;
 import java.util.Map;
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -74,7 +74,7 @@ public class TransactionRoutingConfiguration {
     entityManagerFactory.setJpaPropertyMap(
         Map.of(
             "hibernate.physical_naming_strategy",
-            "org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy"));
+            "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"));
 
     return entityManagerFactory;
   }

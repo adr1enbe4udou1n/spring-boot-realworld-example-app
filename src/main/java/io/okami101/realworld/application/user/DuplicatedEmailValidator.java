@@ -2,8 +2,8 @@ package io.okami101.realworld.application.user;
 
 import io.okami101.realworld.core.user.User;
 import io.okami101.realworld.core.user.UserRepository;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 

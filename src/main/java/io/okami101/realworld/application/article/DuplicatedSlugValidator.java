@@ -2,8 +2,8 @@ package io.okami101.realworld.application.article;
 
 import io.okami101.realworld.core.article.ArticleRepository;
 import io.okami101.realworld.core.service.SlugService;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DuplicatedSlugValidator

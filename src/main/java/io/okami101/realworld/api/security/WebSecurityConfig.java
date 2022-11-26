@@ -9,8 +9,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -19,7 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
   @Value("${spring.h2.console.enabled:false}")
   private boolean h2ConsoleEnabled;
@@ -29,12 +29,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     return new JwtTokenFilter();
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     if (h2ConsoleEnabled) {
-      http.authorizeRequests()
-          .antMatchers("/h2-console", "/h2-console/**")
+      http.authorizeHttpRequests()
+          .requestMatchers("/h2-console", "/h2-console/**")
           .permitAll()
           .and()
           .headers()
@@ -52,14 +52,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
-        .authorizeRequests()
-        .antMatchers("/docs")
+        .authorizeHttpRequests()
+        .requestMatchers("/docs")
         .permitAll()
-        .antMatchers(HttpMethod.GET, "/articles/feed")
+        .requestMatchers(HttpMethod.GET, "/articles/feed")
         .authenticated()
-        .antMatchers(HttpMethod.POST, "/users", "/users/login")
+        .requestMatchers(HttpMethod.POST, "/users", "/users/login")
         .permitAll()
-        .antMatchers(
+        .requestMatchers(
             HttpMethod.GET,
             "/swagger-ui.html",
             "/swagger-ui/**",
@@ -73,6 +73,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .authenticated();
 
     http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+    return http.build();
   }
 
   @Bean
