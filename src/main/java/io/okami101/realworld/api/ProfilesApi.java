@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Profile")
-@RequestMapping(path = "/profiles/celeb_{username}")
+@RequestMapping(path = "/profiles/{username}")
 public class ProfilesApi {
 
   @Autowired private UserService service;

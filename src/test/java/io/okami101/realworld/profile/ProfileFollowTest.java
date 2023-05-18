@@ -15,7 +15,7 @@ public class ProfileFollowTest extends RealworldApplicationTests {
     given()
         .contentType(ContentType.JSON)
         .when()
-        .post(baseUrl + "/api/profiles/celeb_John Doe/follow")
+        .post(baseUrl + "/api/profiles/John Doe/follow")
         .then()
         .statusCode(401);
   }
@@ -24,7 +24,7 @@ public class ProfileFollowTest extends RealworldApplicationTests {
   public void cannot_follow_non_existent_profile() {
     actingAsJohnUser()
         .when()
-        .post(baseUrl + "/api/profiles/celeb_Jane Doe/follow")
+        .post(baseUrl + "/api/profiles/Jane Doe/follow")
         .then()
         .statusCode(401);
   }
@@ -35,7 +35,7 @@ public class ProfileFollowTest extends RealworldApplicationTests {
 
     actingAsJohnUser()
         .when()
-        .post(baseUrl + "/api/profiles/celeb_Jane Doe/follow")
+        .post(baseUrl + "/api/profiles/Jane Doe/follow")
         .then()
         .statusCode(200)
         .body("profile.following", equalTo(true));
@@ -53,7 +53,7 @@ public class ProfileFollowTest extends RealworldApplicationTests {
 
     actingAs(john)
         .when()
-        .delete(baseUrl + "/api/profiles/celeb_Jane Doe/follow")
+        .delete(baseUrl + "/api/profiles/Jane Doe/follow")
         .then()
         .statusCode(200)
         .body("profile.following", equalTo(false));

@@ -15,7 +15,7 @@ public class ProfileGetTest extends RealworldApplicationTests {
     given()
         .contentType(ContentType.JSON)
         .when()
-        .get(baseUrl + "/api/profiles/celeb_John Doe")
+        .get(baseUrl + "/api/profiles/John Doe")
         .then()
         .statusCode(401);
   }
@@ -27,7 +27,7 @@ public class ProfileGetTest extends RealworldApplicationTests {
     given()
         .contentType(ContentType.JSON)
         .when()
-        .get(baseUrl + "/api/profiles/celeb_John Doe")
+        .get(baseUrl + "/api/profiles/John Doe")
         .then()
         .statusCode(200)
         .body("profile.username", equalTo("John Doe"))
@@ -46,7 +46,7 @@ public class ProfileGetTest extends RealworldApplicationTests {
 
     actingAs(jane)
         .when()
-        .get(baseUrl + "/api/profiles/celeb_John Doe")
+        .get(baseUrl + "/api/profiles/John Doe")
         .then()
         .statusCode(200)
         .body("profile.username", equalTo("John Doe"))
