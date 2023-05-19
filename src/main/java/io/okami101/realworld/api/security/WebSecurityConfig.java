@@ -47,6 +47,7 @@ public class WebSecurityConfig {
     }
 
     http.csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .exceptionHandling(
             e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
         .sessionManagement(
@@ -76,8 +77,7 @@ public class WebSecurityConfig {
     return http.build();
   }
 
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
+  private CorsConfigurationSource corsConfigurationSource() {
     final CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(asList("*"));
     configuration.setAllowedMethods(asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
