@@ -41,45 +41,36 @@ public class WebSecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     if (h2ConsoleEnabled) {
-      http.authorizeHttpRequests()
-          .requestMatchers("/h2-console", "/h2-console/**")
-          .permitAll()
-          .and()
-          .headers()
-          .frameOptions()
-          .sameOrigin();
+      http.authorizeHttpRequests(
+              auth -> auth.requestMatchers("/h2-console", "/h2-console/**").permitAll())
+          .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
     }
 
-    http.csrf()
-        .disable()
-        .cors()
-        .and()
-        .exceptionHandling()
-        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-        .and()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .authorizeHttpRequests()
-        .requestMatchers("/docs")
-        .permitAll()
-        .requestMatchers(HttpMethod.GET, "/articles/feed")
-        .authenticated()
-        .requestMatchers(HttpMethod.POST, "/users", "/users/login")
-        .permitAll()
-        .requestMatchers(
-            HttpMethod.GET,
-            "/swagger-ui.html",
-            "/swagger-ui/**",
-            "/v3/**",
-            "/articles/**",
-            "/profiles/**",
-            "/tags",
-            "/")
-        .permitAll()
-        .anyRequest()
-        .authenticated()
-        .and()
+    http.csrf(csrf -> csrf.disable())
+        .exceptionHandling(
+            e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers("/docs")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/articles/feed")
+                    .authenticated()
+                    .requestMatchers(HttpMethod.POST, "/users", "/users/login")
+                    .permitAll()
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/**",
+                        "/articles/**",
+                        "/profiles/**",
+                        "/tags",
+                        "/")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
