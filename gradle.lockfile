@@ -11,7 +11,6 @@ com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2=compileClasspath
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2=compileClasspath
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2=compileClasspath
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.15.2=compileClasspath
-com.fasterxml.jackson:jackson-bom:2.15.2=compileClasspath
 com.fasterxml:classmate:1.5.1=compileClasspath
 com.github.mifmif:generex:1.0.2=compileClasspath
 com.github.slugify:slugify:3.0.5=compileClasspath
