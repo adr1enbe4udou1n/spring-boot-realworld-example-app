@@ -11,7 +11,6 @@ import io.okami101.realworld.core.user.User;
 import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,6 @@ public class DefaultJwtService implements JwtService {
   private Key secret;
   private int sessionTime;
 
-  @Autowired
   public DefaultJwtService(
       @Value("${jwt.secret}") String secret, @Value("${jwt.sessionTime}") int sessionTime) {
     this.secret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
