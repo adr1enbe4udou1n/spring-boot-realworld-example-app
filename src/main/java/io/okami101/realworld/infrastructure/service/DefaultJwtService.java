@@ -3,20 +3,19 @@ package io.okami101.realworld.infrastructure.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.okami101.realworld.core.service.JwtService;
 import io.okami101.realworld.core.user.User;
-import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
+import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DefaultJwtService implements JwtService {
-  private Key secret;
+  private SecretKey secret;
   private int sessionTime;
 
   public DefaultJwtService(
@@ -29,9 +28,9 @@ public class DefaultJwtService implements JwtService {
   public String encode(User user) {
 
     return Jwts.builder()
-        .setSubject(user.getId().toString())
-        .setExpiration(expireTimeFromNow())
-        .signWith(this.secret, SignatureAlgorithm.HS512)
+        .subject(user.getId().toString())
+        .expiration(expireTimeFromNow())
+        .signWith(this.secret)
         .compact();
   }
 
@@ -39,8 +38,9 @@ public class DefaultJwtService implements JwtService {
   public Optional<String> parse(String token) {
     try {
       Jws<Claims> claimsJws =
-          Jwts.parserBuilder().setSigningKey(this.secret).build().parseClaimsJws(token);
-      return Optional.ofNullable(claimsJws.getBody().getSubject());
+          Jwts.parser().verifyWith(this.secret).build().parseSignedClaims(token);
+
+      return Optional.ofNullable(claimsJws.getPayload().getSubject());
     } catch (Exception e) {
       return Optional.empty();
     }
