@@ -7,15 +7,9 @@ plugins {
 
 group = 'io.okami101'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-  compileClasspath {
-    resolutionStrategy.activateDependencyLocking()
-  }
+java {
+	sourceCompatibility = '21'
 }
 
 repositories {
