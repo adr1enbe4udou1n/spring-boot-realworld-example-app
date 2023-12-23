@@ -98,14 +98,18 @@ public class SeederCommand implements CommandLineRunner {
       }
 
       articleRepository.save(article);
+    }
 
-      for (int j = 0; j < faker.number().numberBetween(0, 10); j++) {
-        Comment comment = new Comment();
-        comment.setBody(faker.lorem().paragraph());
-        comment.setAuthor(users.get(faker.random().nextInt(users.size())));
-        comment.setArticle(article);
-        commentRepository.save(comment);
-      }
+    List<Article> articles = articleRepository.findAll();
+
+    for (int i = 0; i < 5000; i++) {
+      Comment comment = new Comment();
+      comment.setBody(faker.lorem().paragraph());
+      comment.setAuthor(users.get(faker.random().nextInt(users.size())));
+      comment.setArticle(articles.get(faker.random().nextInt(articles.size())));
+      commentRepository.save(comment);
+
+      commentRepository.save(comment);
     }
   }
 }
