@@ -13,7 +13,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
   @EntityGraph(attributePaths = {"author", "tags", "favoritedBy"})
   Optional<Article> findBySlug(String slug);
 
-  @EntityGraph(attributePaths = {"author", "tags", "favoritedBy"})
+  // @EntityGraph(attributePaths = {"author", "tags", "favoritedBy"})
   Page<Article> findAllByOrderByIdDesc(Pageable pageable);
 
   @EntityGraph(attributePaths = {"author", "tags", "favoritedBy"})
