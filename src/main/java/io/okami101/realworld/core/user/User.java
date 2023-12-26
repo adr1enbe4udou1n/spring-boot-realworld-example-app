@@ -19,6 +19,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -58,6 +59,7 @@ public class User {
       name = "follower_user",
       joinColumns = {@JoinColumn(name = "following_id")},
       inverseJoinColumns = {@JoinColumn(name = "follower_id")})
+  @BatchSize(size = 20)
   private Set<User> followers = new HashSet<>();
 
   @ManyToMany(mappedBy = "favoritedBy")
