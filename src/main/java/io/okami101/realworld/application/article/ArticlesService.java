@@ -7,18 +7,12 @@ import io.okami101.realworld.core.article.Tag;
 import io.okami101.realworld.core.article.TagRepository;
 import io.okami101.realworld.core.service.SlugService;
 import io.okami101.realworld.core.user.User;
-import io.okami101.realworld.utils.Tuple;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
+import io.okami101.realworld.core.user.UserRepository;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +23,9 @@ public class ArticlesService {
 
   @Autowired private TagRepository tags;
 
-  @Autowired private SlugService slugService;
+  @Autowired private UserRepository users;
 
-  @Autowired private EntityManager em;
+  @Autowired private SlugService slugService;
 
   @Transactional(readOnly = true)
   public Optional<Article> findBySlug(String slug) {
@@ -39,92 +33,31 @@ public class ArticlesService {
   }
 
   @Transactional(readOnly = true)
-  public Tuple<ArrayList<ArticleDTO>, Long> list(
-      int offset, int limit, String author, String tag, String favorited, User currentUser) {
-    return filtredList(offset, limit, author, tag, favorited, false, currentUser);
-  }
-
-  @Transactional(readOnly = true)
-  public Tuple<ArrayList<ArticleDTO>, Long> feed(int offset, int limit, User currentUser) {
-    return filtredList(offset, limit, null, null, null, true, currentUser);
-  }
-
-  private Tuple<ArrayList<ArticleDTO>, Long> filtredList(
-      int offset,
-      int limit,
-      String author,
-      String tag,
-      String favorited,
-      Boolean following,
-      User currentUser) {
-    CriteriaBuilder cb = em.getCriteriaBuilder();
-
-    CriteriaQuery<Article> cq = cb.createQuery(Article.class);
-    Root<Article> root = cq.from(Article.class);
-
-    CriteriaQuery<Long> countCq = cb.createQuery(Long.class);
-    Root<Article> countRoot = countCq.from(Article.class);
-    countCq.select(cb.count(countRoot));
-
-    var predicates = getPredicates(author, tag, favorited, following, currentUser, cb, root);
-    var predicatesCount =
-        getPredicates(author, tag, favorited, following, currentUser, cb, countRoot);
-
-    if (!predicates.isEmpty()) {
-      cq.where(predicates.toArray(new Predicate[0]));
-    }
-
-    if (!predicatesCount.isEmpty()) {
-      countCq.where(predicatesCount.toArray(new Predicate[0]));
-    }
-
-    var articles =
-        em.createQuery(cq.orderBy(cb.desc(root.get("id"))))
-            .setFirstResult(offset)
-            .setMaxResults(Math.min(limit, 20))
-            .getResultList();
-
-    var articlesCount = em.createQuery(countCq).getSingleResult();
-
-    ArrayList<ArticleDTO> articleDTOs =
-        articles.stream()
-            .map(a -> new ArticleDTO(a, currentUser))
-            .collect(Collectors.toCollection(ArrayList::new));
-
-    return new Tuple<>(articleDTOs, articlesCount);
-  }
-
-  private List<Predicate> getPredicates(
-      String author,
-      String tag,
-      String favorited,
-      Boolean following,
-      User currentUser,
-      CriteriaBuilder cb,
-      Root<Article> root) {
-    List<Predicate> predicates = new ArrayList<>();
+  public Page<Article> list(
+      String author, String tag, String favorited, User currentUser, int offset, int limit) {
 
     if (author != null) {
-      var join = root.join("author", JoinType.LEFT);
-      predicates.add(cb.equal(join.get("name"), author));
+      return articles.findAllByAuthorNameOrderByIdDesc(
+          author, PageRequest.of(offset / limit, limit));
     }
 
     if (tag != null) {
-      var join = root.join("tags", JoinType.LEFT);
-      predicates.add(cb.equal(join.get("name"), tag));
+      return articles.findAllByTagsOrderByIdDesc(
+          tags.findByName(tag).get(), PageRequest.of(offset / limit, limit));
     }
 
     if (favorited != null) {
-      var join = root.join("favoritedBy", JoinType.LEFT);
-      predicates.add(cb.equal(join.get("name"), favorited));
+      return articles.findAllByFavoritedByOrderByIdDesc(
+          users.findByName(favorited).get(), PageRequest.of(offset / limit, limit));
     }
 
-    if (following) {
-      var join = root.join("author", JoinType.LEFT).join("followers", JoinType.LEFT);
-      predicates.add(cb.equal(join.get("id"), currentUser.getId()));
-    }
+    return articles.findAllByOrderByIdDesc(PageRequest.of(offset / limit, limit));
+  }
 
-    return predicates;
+  @Transactional(readOnly = true)
+  public Page<Article> feed(User currentUser, int offset, int limit) {
+    return articles.findAllByAuthorFollowersOrderByIdDesc(
+        currentUser, PageRequest.of(offset / limit, limit));
   }
 
   @Transactional

@@ -8,13 +8,11 @@ import io.okami101.realworld.application.article.NewArticleRequest;
 import io.okami101.realworld.application.article.SingleArticleResponse;
 import io.okami101.realworld.application.article.UpdateArticleRequest;
 import io.okami101.realworld.core.user.User;
-import io.okami101.realworld.utils.Tuple;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,9 +50,8 @@ public class ArticlesApi {
       @RequestParam(value = "tag", required = false) String tag,
       @RequestParam(value = "favorited", required = false) String favoritedBy,
       @AuthenticationPrincipal User currentUser) {
-    Tuple<ArrayList<ArticleDTO>, Long> result =
-        service.list(offset, limit, author, tag, favoritedBy, currentUser);
-    return new MultipleArticlesResponse(result.getFirst(), result.getSecond());
+    var result = service.list(author, tag, favoritedBy, currentUser, offset, limit);
+    return new MultipleArticlesResponse(result, currentUser);
   }
 
   @GetMapping(path = "/feed")
@@ -70,8 +67,8 @@ public class ArticlesApi {
       @RequestParam(value = "offset", defaultValue = "0") int offset,
       @RequestParam(value = "limit", defaultValue = "20") int limit,
       @AuthenticationPrincipal User currentUser) {
-    Tuple<ArrayList<ArticleDTO>, Long> result = service.feed(offset, limit, currentUser);
-    return new MultipleArticlesResponse(result.getFirst(), result.getSecond());
+    var result = service.feed(currentUser, offset, limit);
+    return new MultipleArticlesResponse(result, currentUser);
   }
 
   @GetMapping(path = "/{slug}")
