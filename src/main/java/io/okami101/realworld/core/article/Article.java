@@ -20,6 +20,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -64,6 +65,7 @@ public class Article {
       name = "article_tag",
       joinColumns = {@JoinColumn(name = "article_id")},
       inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+  @BatchSize(size = 20)
   private Set<Tag> tags = new HashSet<>();
 
   @ManyToMany
@@ -71,5 +73,6 @@ public class Article {
       name = "article_favorite",
       joinColumns = {@JoinColumn(name = "article_id")},
       inverseJoinColumns = {@JoinColumn(name = "user_id")})
+  @BatchSize(size = 20)
   private Set<User> favoritedBy = new HashSet<>();
 }
