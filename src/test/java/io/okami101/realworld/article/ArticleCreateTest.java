@@ -9,7 +9,6 @@ import io.okami101.realworld.RealworldApplicationTests;
 import io.okami101.realworld.application.article.NewArticle;
 import io.okami101.realworld.application.article.NewArticleRequest;
 import io.okami101.realworld.core.article.Article;
-import io.okami101.realworld.core.article.ArticleRepository;
 import io.okami101.realworld.core.article.Tag;
 import io.okami101.realworld.core.user.User;
 import io.restassured.http.ContentType;
@@ -19,11 +18,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class ArticleCreateTest extends RealworldApplicationTests {
-
-  @Autowired protected ArticleRepository articleRepository;
 
   @Test
   public void guest_cannot_create_article() {
@@ -101,7 +97,7 @@ public class ArticleCreateTest extends RealworldApplicationTests {
             "article.tagList",
             equalTo(Arrays.asList(new String[] {"Existing Tag", "Tag 1", "Tag 2"})));
 
-    Optional<Article> article = articleRepository.findBySlug("test-title");
+    Optional<Article> article = articleRepository.findBySlugWithTags("test-title");
     assertNotNull(article);
     assertEquals(3, article.get().getTags().size());
     assertEquals(3, tagRepository.count());

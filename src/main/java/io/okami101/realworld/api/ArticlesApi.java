@@ -1,7 +1,6 @@
 package io.okami101.realworld.api;
 
 import io.okami101.realworld.api.exception.ResourceNotFoundException;
-import io.okami101.realworld.application.article.ArticleDTO;
 import io.okami101.realworld.application.article.ArticlesService;
 import io.okami101.realworld.application.article.MultipleArticlesResponse;
 import io.okami101.realworld.application.article.NewArticleRequest;
@@ -51,7 +50,7 @@ public class ArticlesApi {
       @RequestParam(value = "favorited", required = false) String favoritedBy,
       @AuthenticationPrincipal User currentUser) {
     var result = service.list(author, tag, favoritedBy, currentUser, offset, limit);
-    return new MultipleArticlesResponse(result, currentUser);
+    return new MultipleArticlesResponse(result.getFirst(), result.getSecond());
   }
 
   @GetMapping(path = "/feed")
@@ -68,7 +67,7 @@ public class ArticlesApi {
       @RequestParam(value = "limit", defaultValue = "20") int limit,
       @AuthenticationPrincipal User currentUser) {
     var result = service.feed(currentUser, offset, limit);
-    return new MultipleArticlesResponse(result, currentUser);
+    return new MultipleArticlesResponse(result.getFirst(), result.getSecond());
   }
 
   @GetMapping(path = "/{slug}")
@@ -80,8 +79,8 @@ public class ArticlesApi {
   public SingleArticleResponse get(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
     return service
-        .findBySlug(slug)
-        .map(article -> new SingleArticleResponse(new ArticleDTO(article, currentUser)))
+        .get(slug, currentUser)
+        .map(SingleArticleResponse::new)
         .orElseThrow(ResourceNotFoundException::new);
   }
 

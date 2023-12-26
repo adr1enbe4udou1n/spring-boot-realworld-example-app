@@ -33,8 +33,8 @@ public class FavoritesApi {
   public SingleArticleResponse favorite(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
     return service
-        .findBySlug(slug)
-        .map(article -> new SingleArticleResponse(service.favorite(article, currentUser)))
+        .favorite(slug, currentUser)
+        .map(SingleArticleResponse::new)
         .orElseThrow(ResourceNotFoundException::new);
   }
 
@@ -48,8 +48,8 @@ public class FavoritesApi {
   public SingleArticleResponse unfavorite(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User currentUser) {
     return service
-        .findBySlug(slug)
-        .map(article -> new SingleArticleResponse(service.unfavorite(article, currentUser)))
+        .unfavorite(slug, currentUser)
+        .map(SingleArticleResponse::new)
         .orElseThrow(ResourceNotFoundException::new);
   }
 }

@@ -8,6 +8,8 @@ import io.okami101.realworld.core.article.TagRepository;
 import io.okami101.realworld.core.service.SlugService;
 import io.okami101.realworld.core.user.User;
 import io.okami101.realworld.core.user.UserRepository;
+import io.okami101.realworld.utils.Tuple;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,31 +35,51 @@ public class ArticlesService {
   }
 
   @Transactional(readOnly = true)
-  public Page<Article> list(
-      String author, String tag, String favorited, User currentUser, int offset, int limit) {
-
-    if (author != null) {
-      return articles.findAllByAuthorNameOrderByIdDesc(
-          author, PageRequest.of(offset / limit, limit));
-    }
-
-    if (tag != null) {
-      return articles.findAllByTagsOrderByIdDesc(
-          tags.findByName(tag).get(), PageRequest.of(offset / limit, limit));
-    }
-
-    if (favorited != null) {
-      return articles.findAllByFavoritedByOrderByIdDesc(
-          users.findByName(favorited).get(), PageRequest.of(offset / limit, limit));
-    }
-
-    return articles.findAllByOrderByIdDesc(PageRequest.of(offset / limit, limit));
+  public Optional<ArticleDTO> get(String slug, User currentUser) {
+    return findBySlug(slug).map(a -> new ArticleDTO(a, currentUser));
   }
 
   @Transactional(readOnly = true)
-  public Page<Article> feed(User currentUser, int offset, int limit) {
-    return articles.findAllByAuthorFollowersOrderByIdDesc(
-        currentUser, PageRequest.of(offset / limit, limit));
+  public Tuple<List<ArticleDTO>, Long> list(
+      String author, String tag, String favorited, User currentUser, int offset, int limit) {
+
+    if (author != null) {
+      return getPaginatedResponse(
+          articles.findAllByAuthorNameOrderByIdDesc(author, PageRequest.of(offset / limit, limit)),
+          currentUser);
+    }
+
+    if (tag != null) {
+      return getPaginatedResponse(
+          articles.findAllByTagsOrderByIdDesc(
+              tags.findByName(tag).get(), PageRequest.of(offset / limit, limit)),
+          currentUser);
+    }
+
+    if (favorited != null) {
+      return getPaginatedResponse(
+          articles.findAllByFavoritedByOrderByIdDesc(
+              users.findByName(favorited).get(), PageRequest.of(offset / limit, limit)),
+          currentUser);
+    }
+
+    return getPaginatedResponse(
+        articles.findAllByOrderByIdDesc(PageRequest.of(offset / limit, limit)), currentUser);
+  }
+
+  @Transactional(readOnly = true)
+  public Tuple<List<ArticleDTO>, Long> feed(User currentUser, int offset, int limit) {
+    return getPaginatedResponse(
+        articles.findAllByAuthorFollowersOrderByIdDesc(
+            currentUser, PageRequest.of(offset / limit, limit)),
+        currentUser);
+  }
+
+  private Tuple<List<ArticleDTO>, Long> getPaginatedResponse(
+      Page<Article> articles, User currentUser) {
+    return new Tuple<>(
+        articles.map(a -> new ArticleDTO(a, currentUser)).getContent(),
+        articles.getTotalElements());
   }
 
   @Transactional
@@ -107,14 +129,22 @@ public class ArticlesService {
   }
 
   @Transactional
-  public ArticleDTO favorite(Article article, User currentUser) {
-    article.getFavoritedBy().add(currentUser);
-    return new ArticleDTO(articles.saveAndFlush(article), currentUser);
+  public Optional<ArticleDTO> favorite(String slug, User currentUser) {
+    return findBySlug(slug)
+        .map(
+            article -> {
+              article.getFavoritedBy().add(currentUser);
+              return new ArticleDTO(articles.saveAndFlush(article), currentUser);
+            });
   }
 
   @Transactional
-  public ArticleDTO unfavorite(Article article, User currentUser) {
-    article.getFavoritedBy().remove(currentUser);
-    return new ArticleDTO(articles.saveAndFlush(article), currentUser);
+  public Optional<ArticleDTO> unfavorite(String slug, User currentUser) {
+    return findBySlug(slug)
+        .map(
+            article -> {
+              article.getFavoritedBy().remove(currentUser);
+              return new ArticleDTO(articles.saveAndFlush(article), currentUser);
+            });
   }
 }

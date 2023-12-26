@@ -8,6 +8,7 @@ import io.okami101.realworld.RealworldApplicationTests;
 import io.okami101.realworld.core.article.Article;
 import io.okami101.realworld.core.user.User;
 import io.restassured.http.ContentType;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class ArticleFavoriteTest extends RealworldApplicationTests {
@@ -48,7 +49,8 @@ public class ArticleFavoriteTest extends RealworldApplicationTests {
         .body("article.favorited", equalTo(true))
         .body("article.favoritesCount", equalTo(1));
 
-    assertEquals(1, articleRepository.findBySlug("test-title").get().getFavoritedBy().size());
+    Optional<Article> dbArticle = articleRepository.findBySlugWithFavorites("test-title");
+    assertEquals(1, dbArticle.get().getFavoritedBy().size());
   }
 
   @Test
@@ -71,6 +73,7 @@ public class ArticleFavoriteTest extends RealworldApplicationTests {
         .body("article.favorited", equalTo(false))
         .body("article.favoritesCount", equalTo(0));
 
-    assertEquals(0, articleRepository.findBySlug("test-title").get().getFavoritedBy().size());
+    Optional<Article> dbArticle = articleRepository.findBySlugWithFavorites("test-title");
+    assertEquals(0, dbArticle.get().getFavoritedBy().size());
   }
 }
