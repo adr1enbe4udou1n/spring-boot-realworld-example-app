@@ -97,7 +97,7 @@ public class ArticleCreateTest extends RealworldApplicationTests {
             "article.tagList",
             equalTo(Arrays.asList(new String[] {"Existing Tag", "Tag 1", "Tag 2"})));
 
-    Optional<Article> article = articleRepository.findBySlugWithTags("test-title");
+    Optional<Article> article = articleRepository.findBySlug("test-title");
     assertNotNull(article);
     assertEquals(3, article.get().getTags().size());
     assertEquals(3, tagRepository.count());

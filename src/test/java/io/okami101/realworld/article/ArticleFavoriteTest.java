@@ -49,7 +49,7 @@ public class ArticleFavoriteTest extends RealworldApplicationTests {
         .body("article.favorited", equalTo(true))
         .body("article.favoritesCount", equalTo(1));
 
-    Optional<Article> dbArticle = articleRepository.findBySlugWithFavorites("test-title");
+    Optional<Article> dbArticle = articleRepository.findBySlug("test-title");
     assertEquals(1, dbArticle.get().getFavoritedBy().size());
   }
 
@@ -73,7 +73,7 @@ public class ArticleFavoriteTest extends RealworldApplicationTests {
         .body("article.favorited", equalTo(false))
         .body("article.favoritesCount", equalTo(0));
 
-    Optional<Article> dbArticle = articleRepository.findBySlugWithFavorites("test-title");
+    Optional<Article> dbArticle = articleRepository.findBySlug("test-title");
     assertEquals(0, dbArticle.get().getFavoritedBy().size());
   }
 }
