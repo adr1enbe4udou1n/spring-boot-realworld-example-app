@@ -4,6 +4,7 @@ import io.okami101.realworld.core.article.Article;
 import io.okami101.realworld.core.article.Comment;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -53,7 +54,7 @@ public class User {
   @Column(nullable = false)
   private Instant updatedAt;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "follower_user",
       joinColumns = {@JoinColumn(name = "following_id")},
