@@ -62,10 +62,6 @@ public class ArticlesService {
     CriteriaQuery<Article> cq = cb.createQuery(Article.class);
     Root<Article> root = cq.from(Article.class);
 
-    root.fetch("author", JoinType.LEFT).fetch("followers", JoinType.LEFT);
-    root.fetch("favoritedBy", JoinType.LEFT);
-    root.fetch("tags", JoinType.LEFT);
-
     CriteriaQuery<Long> countCq = cb.createQuery(Long.class);
     Root<Article> countRoot = countCq.from(Article.class);
     countCq.select(cb.count(countRoot));
