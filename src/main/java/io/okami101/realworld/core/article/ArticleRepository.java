@@ -16,16 +16,16 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
   @EntityGraph(attributePaths = {"author"})
   Page<Article> findAllByOrderByIdDesc(Pageable pageable);
 
-  @EntityGraph(attributePaths = {"author"})
+  @EntityGraph(attributePaths = {"author", "tags"})
   Page<Article> findAllByFavoritedByOrderByIdDesc(User user, Pageable pageable);
 
-  @EntityGraph(attributePaths = {"author"})
+  @EntityGraph(attributePaths = {"author", "tags"})
   Page<Article> findAllByAuthorNameOrderByIdDesc(String author, Pageable pageable);
 
-  @EntityGraph(attributePaths = {"author"})
+  @EntityGraph(attributePaths = {"author", "tags"})
   Page<Article> findAllByTagsOrderByIdDesc(Tag tag, Pageable pageable);
 
-  @EntityGraph(attributePaths = {"author"})
+  @EntityGraph(attributePaths = {"author", "tags"})
   Page<Article> findAllByAuthorFollowersOrderByIdDesc(User user, Pageable pageable);
 
   boolean existsBySlug(String value);
