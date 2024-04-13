@@ -1,0 +1,14 @@
+version: "3"
+
+tasks:
+  prepare:
+    cmds: []
+  install:
+    cmds: []
+  lint:
+    cmds: []
+  build:
+    cmds:
+      - gradle build
+  test:
+    cmds: []
