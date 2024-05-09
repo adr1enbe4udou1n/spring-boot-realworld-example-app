@@ -26,15 +26,16 @@ public class WebSecurityConfig {
   @Value("${spring.h2.console.enabled:false}")
   private boolean h2ConsoleEnabled;
 
+  private JwtTokenFilter jwtTokenFilter;
+
   @Bean
   @Lazy
   public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
     return new HandlerMappingIntrospector();
   }
 
-  @Bean
-  public JwtTokenFilter jwtTokenFilter() {
-    return new JwtTokenFilter();
+  public WebSecurityConfig(JwtTokenFilter jwtTokenFilter) {
+    this.jwtTokenFilter = jwtTokenFilter;
   }
 
   @Bean
@@ -72,7 +73,7 @@ public class WebSecurityConfig {
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        .addFilterBefore(this.jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }

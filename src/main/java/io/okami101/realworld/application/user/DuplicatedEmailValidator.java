@@ -4,13 +4,16 @@ import io.okami101.realworld.core.user.User;
 import io.okami101.realworld.core.user.UserRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class DuplicatedEmailValidator
     implements ConstraintValidator<DuplicatedEmailConstraint, String> {
 
-  @Autowired private UserRepository userRepository;
+  private final UserRepository userRepository;
+
+  public DuplicatedEmailValidator(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {

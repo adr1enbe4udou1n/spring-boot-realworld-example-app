@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/articles/{slug}/comments")
 public class CommentsApi {
 
-  @Autowired private ArticlesService articleService;
+  private ArticlesService articleService;
 
-  @Autowired private CommentsService service;
+  private CommentsService service;
+
+  public CommentsApi(CommentsService service, ArticlesService articleService) {
+    this.service = service;
+    this.articleService = articleService;
+  }
 
   @GetMapping
   @Operation(

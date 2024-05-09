@@ -5,17 +5,23 @@ import io.okami101.realworld.core.user.PasswordHashService;
 import io.okami101.realworld.core.user.User;
 import io.okami101.realworld.core.user.UserRepository;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
-  @Autowired private UserRepository userRepository;
+  private final UserRepository userRepository;
+  private final PasswordHashService passwordHashService;
+  private final JwtService jwtService;
 
-  @Autowired private PasswordHashService passwordHashService;
-
-  @Autowired private JwtService jwtService;
+  public UserService(
+      UserRepository userRepository,
+      PasswordHashService passwordHashService,
+      JwtService jwtService) {
+    this.userRepository = userRepository;
+    this.passwordHashService = passwordHashService;
+    this.jwtService = jwtService;
+  }
 
   @Transactional
   public UserDTO create(NewUser userDto) {

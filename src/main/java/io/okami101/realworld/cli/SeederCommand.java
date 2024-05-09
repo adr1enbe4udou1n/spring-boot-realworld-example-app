@@ -15,26 +15,36 @@ import java.util.List;
 import java.util.stream.Collectors;
 import net.datafaker.Faker;
 import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SeederCommand implements CommandLineRunner {
 
-  @Autowired protected UserRepository userRepository;
+  protected UserRepository userRepository;
+  protected ArticleRepository articleRepository;
+  protected TagRepository tagRepository;
+  protected CommentRepository commentRepository;
+  protected PasswordHashService passwordHashService;
+  protected SlugService slugService;
+  protected Flyway flyway;
 
-  @Autowired protected ArticleRepository articleRepository;
-
-  @Autowired protected TagRepository tagRepository;
-
-  @Autowired protected CommentRepository commentRepository;
-
-  @Autowired protected PasswordHashService passwordHashService;
-
-  @Autowired protected SlugService slugService;
-
-  @Autowired protected Flyway flyway;
+  public SeederCommand(
+      UserRepository userRepository,
+      ArticleRepository articleRepository,
+      TagRepository tagRepository,
+      CommentRepository commentRepository,
+      PasswordHashService passwordHashService,
+      SlugService slugService,
+      Flyway flyway) {
+    this.userRepository = userRepository;
+    this.articleRepository = articleRepository;
+    this.tagRepository = tagRepository;
+    this.commentRepository = commentRepository;
+    this.passwordHashService = passwordHashService;
+    this.slugService = slugService;
+    this.flyway = flyway;
+  }
 
   @Override
   @Transactional

@@ -4,7 +4,6 @@ import io.okami101.realworld.application.article.TagsResponse;
 import io.okami101.realworld.application.article.TagsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/tags")
 public class TagsApi {
 
-  @Autowired public TagsService service;
+  private final TagsService service;
+
+  public TagsApi(TagsService service) {
+    this.service = service;
+  }
 
   @GetMapping
   @Operation(

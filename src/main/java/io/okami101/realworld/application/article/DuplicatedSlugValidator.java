@@ -4,14 +4,17 @@ import io.okami101.realworld.core.article.ArticleRepository;
 import io.okami101.realworld.core.service.SlugService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class DuplicatedSlugValidator
     implements ConstraintValidator<DuplicatedSlugConstraint, String> {
 
-  @Autowired private ArticleRepository articleRepository;
+  private final ArticleRepository articleRepository;
+  private final SlugService slugService;
 
-  @Autowired private SlugService slugService;
+  public DuplicatedSlugValidator(ArticleRepository articleRepository, SlugService slugService) {
+    this.articleRepository = articleRepository;
+    this.slugService = slugService;
+  }
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {

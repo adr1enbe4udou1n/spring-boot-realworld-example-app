@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/articles/{slug}/favorite")
 public class FavoritesApi {
 
-  @Autowired private ArticlesService service;
+  private ArticlesService service;
+
+  public FavoritesApi(ArticlesService service) {
+    this.service = service;
+  }
 
   @PostMapping
   @Operation(

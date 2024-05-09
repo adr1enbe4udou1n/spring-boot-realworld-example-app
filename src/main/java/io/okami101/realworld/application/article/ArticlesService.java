@@ -12,7 +12,6 @@ import io.okami101.realworld.utils.Tuple;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,13 +20,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ArticlesService {
 
-  @Autowired private ArticleRepository articles;
+  private final ArticleRepository articles;
+  private final TagRepository tags;
+  private final UserRepository users;
+  private final SlugService slugService;
 
-  @Autowired private TagRepository tags;
-
-  @Autowired private UserRepository users;
-
-  @Autowired private SlugService slugService;
+  public ArticlesService(
+      ArticleRepository articles,
+      TagRepository tags,
+      UserRepository users,
+      SlugService slugService) {
+    this.articles = articles;
+    this.tags = tags;
+    this.users = users;
+    this.slugService = slugService;
+  }
 
   @Transactional(readOnly = true)
   public Optional<Article> findBySlug(String slug) {

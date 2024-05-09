@@ -7,14 +7,17 @@ import io.okami101.realworld.core.article.CommentRepository;
 import io.okami101.realworld.core.user.User;
 import java.util.ArrayList;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentsService {
 
-  @Autowired private CommentRepository comments;
+  private final CommentRepository comments;
+
+  public CommentsService(CommentRepository comments) {
+    this.comments = comments;
+  }
 
   @Transactional(readOnly = true)
   public Optional<Comment> findById(Long id) {
