@@ -22,7 +22,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class RealworldApplicationTests {
+public abstract class RealworldApplicationTests {
 
   @Value("http://localhost:${local.server.port}")
   protected String baseUrl;
