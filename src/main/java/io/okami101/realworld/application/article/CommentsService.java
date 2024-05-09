@@ -5,8 +5,9 @@ import io.okami101.realworld.core.article.Article;
 import io.okami101.realworld.core.article.Comment;
 import io.okami101.realworld.core.article.CommentRepository;
 import io.okami101.realworld.core.user.User;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +26,10 @@ public class CommentsService {
   }
 
   @Transactional(readOnly = true)
-  public ArrayList<CommentDTO> list(Article article, User currentUser) {
+  public List<CommentDTO> list(Article article, User currentUser) {
     return comments.findAllByArticleOrderByIdDesc(article).stream()
         .map(c -> new CommentDTO(c, currentUser))
-        .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        .collect(Collectors.toList());
   }
 
   @Transactional

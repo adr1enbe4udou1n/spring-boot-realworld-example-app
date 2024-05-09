@@ -2,6 +2,7 @@ package io.okami101.realworld.application.article;
 
 import io.okami101.realworld.application.user.ProfileDTO;
 import io.okami101.realworld.core.article.Article;
+import io.okami101.realworld.core.article.Tag;
 import io.okami101.realworld.core.user.User;
 import java.time.Instant;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ArticleDTO {
     this.description = article.getDescription();
     this.body = article.getBody();
     this.tagList =
-        article.getTags().stream().map(t -> t.getName()).sorted().collect(Collectors.toList());
+        article.getTags().stream().map(Tag::getName).sorted().collect(Collectors.toList());
     this.createdAt = article.getCreatedAt();
     this.updatedAt = article.getUpdatedAt();
     this.author = new ProfileDTO(article.getAuthor(), currentUser);
