@@ -57,17 +57,23 @@ public class ArticlesService {
     }
 
     if (tag != null) {
-      return getPaginatedResponse(
-          articles.findAllByTagsOrderByIdDesc(
-              tags.findByName(tag).get(), PageRequest.of(offset / limit, limit)),
-          currentUser);
+      Optional<Tag> optionalTag = tags.findByName(tag);
+      if (optionalTag.isPresent()) {
+        return getPaginatedResponse(
+            articles.findAllByTagsOrderByIdDesc(
+                optionalTag.get(), PageRequest.of(offset / limit, limit)),
+            currentUser);
+      }
     }
 
     if (favorited != null) {
-      return getPaginatedResponse(
-          articles.findAllByFavoritedByOrderByIdDesc(
-              users.findByName(favorited).get(), PageRequest.of(offset / limit, limit)),
-          currentUser);
+      Optional<User> optionalUser = users.findByName(favorited);
+      if (optionalUser.isPresent()) {
+        return getPaginatedResponse(
+            articles.findAllByFavoritedByOrderByIdDesc(
+                optionalUser.get(), PageRequest.of(offset / limit, limit)),
+            currentUser);
+      }
     }
 
     return getPaginatedResponse(
