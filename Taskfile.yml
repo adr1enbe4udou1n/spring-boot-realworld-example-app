@@ -10,7 +10,7 @@ tasks:
   build:
     cmds:
       - gradle build
-      - gradle sonar -Dsonar.projectName="Spring Boot Realworld" -Dsonar.host.url={{.SONAR_URL}} -Dsonar.projectKey={{.SONAR_PROJECT_KEY}} -Dsonar.token={{.SONAR_TOKEN}}
-      - gradle test jacocoTestReport sonarqube
+      - gradle sonar -Dsonar.host.url={{.SONAR_URL}} -Dsonar.projectName="Spring Boot Realworld" -Dsonar.projectKey={{.SONAR_PROJECT_KEY}} -Dsonar.token={{.SONAR_TOKEN}}
   test:
-    cmds: []
+    cmds:
+      - gradle test jacocoTestReport sonarqube
