@@ -7,7 +7,6 @@ import io.okami101.realworld.core.article.CommentRepository;
 import io.okami101.realworld.core.user.User;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +28,7 @@ public class CommentsService {
   public List<CommentDTO> list(Article article, User currentUser) {
     return comments.findAllByArticleOrderByIdDesc(article).stream()
         .map(c -> new CommentDTO(c, currentUser))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Transactional

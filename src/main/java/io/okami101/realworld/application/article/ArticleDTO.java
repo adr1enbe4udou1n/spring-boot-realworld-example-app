@@ -6,7 +6,6 @@ import io.okami101.realworld.core.article.Tag;
 import io.okami101.realworld.core.user.User;
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
@@ -27,8 +26,7 @@ public class ArticleDTO {
     this.slug = article.getSlug();
     this.description = article.getDescription();
     this.body = article.getBody();
-    this.tagList =
-        article.getTags().stream().map(Tag::getName).sorted().collect(Collectors.toList());
+    this.tagList = article.getTags().stream().map(Tag::getName).sorted().toList();
     this.createdAt = article.getCreatedAt();
     this.updatedAt = article.getUpdatedAt();
     this.author = new ProfileDTO(article.getAuthor(), currentUser);
