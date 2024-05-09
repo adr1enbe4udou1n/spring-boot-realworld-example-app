@@ -2,7 +2,9 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot'
 	id 'io.spring.dependency-management'
-	id "com.diffplug.spotless"
+	id 'com.diffplug.spotless'
+	id 'jacoco'
+	id 'org.sonarqube'
 }
 
 group = 'io.okami101'
@@ -48,6 +50,12 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+jacocoTestReport {
+	reports {
+		xml.required.set(true)
+	}
 }
 
 spotless {
