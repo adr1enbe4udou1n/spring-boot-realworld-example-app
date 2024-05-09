@@ -43,7 +43,7 @@ public class ArticlesService {
 
   @Transactional(readOnly = true)
   public Optional<ArticleDTO> get(String slug, User currentUser) {
-    return findBySlug(slug).map(a -> new ArticleDTO(a, currentUser));
+    return articles.findBySlug(slug).map(a -> new ArticleDTO(a, currentUser));
   }
 
   @Transactional(readOnly = true)
@@ -143,7 +143,8 @@ public class ArticlesService {
 
   @Transactional
   public Optional<ArticleDTO> favorite(String slug, User currentUser) {
-    return findBySlug(slug)
+    return articles
+        .findBySlug(slug)
         .map(
             article -> {
               article.getFavoritedBy().add(currentUser);
@@ -153,7 +154,8 @@ public class ArticlesService {
 
   @Transactional
   public Optional<ArticleDTO> unfavorite(String slug, User currentUser) {
-    return findBySlug(slug)
+    return articles
+        .findBySlug(slug)
         .map(
             article -> {
               article.getFavoritedBy().remove(currentUser);
