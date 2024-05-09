@@ -11,5 +11,6 @@ tasks:
     cmds:
       - gradle build
       - gradle sonar -Dsonar.host.url={{.SONAR_URL}} -Dsonar.projectKey={{.SONAR_PROJECT_KEY}} -Dsonar.token={{.SONAR_TOKEN}}
+      - gradle test jacocoTestReport sonarqube
   test:
     cmds: []
