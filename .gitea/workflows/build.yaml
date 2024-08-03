@@ -1,0 +1,28 @@
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DB_HOST: ${{ vars.POSTGRESQL_HOST }}
+      DB_PORT: 5432
+      DB_DATABASE: conduit_springboot_test
+      DB_USERNAME: test
+      DB_PASSWORD: test
+      JWT_SECRET_KEY: "MDIyZGQwMDdjNDA3ZDQwYTc4MGYyNjdkZjFkZTJkMzRhMDhmMTNkN2QyMWY5ZjMxMTYwZjM5ZDI1YjE5ZjhiYQ=="
+      SONAR_URL: ${{ vars.SONAR_HOST_URL }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_PROJECT_KEY: spring-boot-realworld
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gradle/gradle-build-action@v3
+      - uses: https://gitea.okami101.io/okami101/actions/task@main
+      - uses: https://gitea.okami101.io/okami101/actions/docker@main
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
