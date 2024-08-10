@@ -2,8 +2,6 @@
 
 Spring Boot codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
 
-[![CI](https://concourse.okami101.io/api/v1/teams/main/pipelines/conduit-spring-boot/badge)](https://concourse.okami101.io/teams/main/pipelines/conduit-spring-boot)
-
 ## [RealWorld](https://github.com/gothinkster/realworld)
 
 This codebase was created to demonstrate a fully fledged fullstack application built with Spring Boot including CRUD operations, authentication, routing, pagination, and more.
