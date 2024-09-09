@@ -6,6 +6,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: test
+          POSTGRES_USER: test
+          POSTGRES_DB: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -20,9 +32,9 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
       - name: Build
         env:
-          DB_HOST: ${{ vars.POSTGRESQL_HOST }}
+          DB_HOST: postgres
           DB_PORT: 5432
-          DB_DATABASE: conduit_springboot_test
+          DB_DATABASE: test
           DB_USERNAME: test
           DB_PASSWORD: test
           JWT_SECRET_KEY: "MDIyZGQwMDdjNDA3ZDQwYTc4MGYyNjdkZjFkZTJkMzRhMDhmMTNkN2QyMWY5ZjMxMTYwZjM5ZDI1YjE5ZjhiYQ=="
