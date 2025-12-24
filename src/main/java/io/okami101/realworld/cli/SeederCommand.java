@@ -35,15 +35,13 @@ public class SeederCommand implements CommandLineRunner {
       TagRepository tagRepository,
       CommentRepository commentRepository,
       PasswordHashService passwordHashService,
-      SlugService slugService,
-      Flyway flyway) {
+      SlugService slugService) {
     this.userRepository = userRepository;
     this.articleRepository = articleRepository;
     this.tagRepository = tagRepository;
     this.commentRepository = commentRepository;
     this.passwordHashService = passwordHashService;
     this.slugService = slugService;
-    this.flyway = flyway;
   }
 
   @Override
@@ -52,8 +50,6 @@ public class SeederCommand implements CommandLineRunner {
     if (args.length == 0 || !args[0].equals("--seed")) {
       return;
     }
-
-    flyway.migrate();
 
     Faker faker = new Faker();
 
