@@ -12,5 +12,6 @@
     "connectionId": "sonarqube-okami101",
     "projectKey": "spring-boot-realworld"
   },
-  "java.compile.nullAnalysis.mode": "automatic"
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
