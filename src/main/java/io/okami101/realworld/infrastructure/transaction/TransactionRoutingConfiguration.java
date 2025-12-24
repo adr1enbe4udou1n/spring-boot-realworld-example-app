@@ -1,4 +1,4 @@
-package io.okami101.realworld.infrastructure.Transaction;
+package io.okami101.realworld.infrastructure.transaction;
 
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;

@@ -1,4 +1,4 @@
-package io.okami101.realworld.infrastructure.Transaction;
+package io.okami101.realworld.infrastructure.transaction;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.lang.Nullable;
