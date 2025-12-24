@@ -3,7 +3,7 @@
   "emeraldwalk.runonsave": {
     "commands": [
       {
-        "match": ".*\\.java$",
+        "match": ".*\\.(java|gradle)$",
         "cmd": "./gradlew spotlessApply"
       }
     ]
