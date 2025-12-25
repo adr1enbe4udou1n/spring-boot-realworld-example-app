@@ -28,11 +28,11 @@ jobs:
         with:
           path: /root/.gradle/caches
           key: ${{ runner.os }}-gradle
-      - uses: actions/cache@v5
+      - name: sonar cache
+        uses: actions/cache@v5
         with:
           path: /root/.sonar/cache
           key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
       - run: mise ci
         env:
           DB_HOST: postgres
