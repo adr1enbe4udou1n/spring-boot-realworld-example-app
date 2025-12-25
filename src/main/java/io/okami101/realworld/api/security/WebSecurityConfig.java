@@ -5,7 +5,6 @@ import static java.util.Arrays.asList;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
 @EnableWebSecurity
@@ -28,18 +26,12 @@ public class WebSecurityConfig {
 
   private JwtTokenFilter jwtTokenFilter;
 
-  @Bean
-  @Lazy
-  public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
-    return new HandlerMappingIntrospector();
-  }
-
   public WebSecurityConfig(JwtTokenFilter jwtTokenFilter) {
     this.jwtTokenFilter = jwtTokenFilter;
   }
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http) {
 
     if (h2ConsoleEnabled) {
       http.authorizeHttpRequests(
