@@ -1,5 +1,5 @@
 [tasks.ci]
-run = "./gradlew build --no-daemon jacocoTestReport sonar"
+run = "gradle build --no-daemon jacocoTestReport sonar"
 
 [tools]
 gradle = "9"
