@@ -1,13 +1,5 @@
 {
   "java.format.enabled": false,
-  "emeraldwalk.runonsave": {
-    "commands": [
-      {
-        "match": ".*\\.(java|gradle)$",
-        "cmd": "./gradlew spotlessApply"
-      }
-    ]
-  },
   "sonarlint.connectedMode.project": {
     "connectionId": "okami101",
     "projectKey": "spring-boot-realworld"
