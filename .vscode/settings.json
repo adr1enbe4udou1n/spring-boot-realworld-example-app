@@ -1,5 +1,15 @@
 {
   "java.format.enabled": false,
+  "emeraldwalk.runonsave": {
+    "ignoreUnchangedFiles": true,
+    "commands": [
+      {
+        "match": "[\\\\/]src[\\\\/](main|test)[\\\\/]java[\\\\/].*\\.java$",
+        "cmd": "cd \"${workspaceFolder}\" && ./gradlew spotlessApply -PspotlessFiles=\"${file}\"",
+        "autoShowOutputPanel": "error"
+      }
+    ]
+  },
   "sonarlint.connectedMode.project": {
     "connectionId": "okami101",
     "projectKey": "spring-boot-realworld"
