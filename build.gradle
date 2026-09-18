@@ -48,6 +48,10 @@ dependencies {
 	testImplementation 'io.rest-assured:xml-path:_'
 }
 
+tasks.named('refreshVersions') {
+	notCompatibleWithConfigurationCache('refreshVersions collects dependencies at configuration time')
+}
+
 test {
 	useJUnitPlatform()
 }
