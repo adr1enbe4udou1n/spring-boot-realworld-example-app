@@ -30,7 +30,7 @@ dependencies {
 	implementation 'com.github.slugify:slugify:_'
 	implementation 'net.datafaker:datafaker:_'
 
-	compileOnly 'org.projectlombok:lombok'
+	compileOnly 'org.projectlombok:lombok:_'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	
 	runtimeOnly 'org.postgresql:postgresql'
@@ -38,7 +38,7 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:_'
 
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok:_'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
