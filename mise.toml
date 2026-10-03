@@ -3,5 +3,5 @@ run = "gradle build --no-daemon jacocoTestReport sonar"
 
 [tools]
 gradle = "9"
-java = "26"
+java = "27"
 sonar-scanner-cli = "8"
